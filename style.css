@@ -113,10 +113,14 @@ nav ul li a{
 
 /* Products */
 
+/* Products */
+
 #products{
     padding:60px 8%;
 }
 
+.product-grid{
+    display:grid;
     grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
     gap:25px;
 }
@@ -223,12 +227,6 @@ nav ul{
 section,
 .card,
 .product-card{
-    opacity:0;
-    transform:translateY(40px);
-    transition:0.8s;
-}
-
-.show{
     opacity:1;
     transform:translateY(0);
 }
