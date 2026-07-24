@@ -210,3 +210,27 @@ nav ul{
 }
 
 }
+/* WhatsApp Pulse */
+.pulse{
+    animation:pulse 1s infinite;
+}
+
+@keyframes pulse{
+    0%{transform:scale(1);}
+    50%{transform:scale(1.08);}
+    100%{transform:scale(1);}
+}
+
+/* Scroll Animation */
+section,
+.card,
+.product-card{
+    opacity:0;
+    transform:translateY(40px);
+    transition:0.8s;
+}
+
+.show{
+    opacity:1;
+    transform:translateY(0);
+}
