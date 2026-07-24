@@ -46,7 +46,7 @@ nav ul li a{
 
 /* Hero */
 
-.hero{
+.product-grid{
     display:flex;
     justify-content:space-between;
     align-items:center;
@@ -121,8 +121,23 @@ nav ul li a{
 
 .product-grid{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-    gap:25px;
+    grid-template-columns:repeat(auto-fit, minmax(350px, 1fr));
+    gap:30px;
+    margin-top:30px;
+}
+
+.product-card{
+    background:#fff;
+    border-radius:15px;
+    padding:20px;
+    text-align:center;
+    box-shadow:0 10px 25px rgba(0,0,0,.12);
+}
+
+.product-card img{
+    width:100%;
+    border-radius:10px;
+    margin-bottom:15px;
 }
 
 .product-card{
@@ -200,7 +215,11 @@ nav ul{
 }
 
 .hero{
-    flex-direction:column;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:40px;
+    padding:60px 8%;
 }
 
 .hero-left h1{
