@@ -9,7 +9,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyDRYU05VxRB3B2PIp2OPGOcoIkS6BH8Usc",
   authDomain: "anjali-traders-bc0e6.firebaseapp.com",
   projectId: "anjali-traders-bc0e6",
-  storageBucket: "anjali-traders-bc0e6.firebasestorage.app",
+  storageBucket: "anjali-traders-bc0e6.appspot.com",
   messagingSenderId: "17008156965",
   appId: "1:17008156965:web:51e29057d8da3a46f73acc"
 };
@@ -20,26 +20,41 @@ const db = getFirestore(app);
 const container = document.getElementById("product-list");
 
 async function loadProducts() {
+  try {
+    container.innerHTML = "";
 
-  container.innerHTML = "";
+    const snapshot = await getDocs(collection(db, "products"));
 
-  const snapshot = await getDocs(collection(db, "products"));
+    console.log("Products found:", snapshot.size);
 
-  snapshot.forEach((doc) => {
+    if (snapshot.empty) {
+      container.innerHTML = "<h2>No Products Available</h2>";
+      return;
+    }
 
-    const product = doc.data();
+    snapshot.forEach((doc) => {
+      const product = doc.data();
 
-    container.innerHTML += `
-      <div class="product-card">
-        <img src="${product.image}" alt="${product.name}">
-        <h3>${product.name}</h3>
-        <a href="tel:8235093177" class="btn">📞 Call Now</a>
-        <a href="https://wa.me/918235093177" class="btn">💬 WhatsApp</a>
-      </div>
-    `;
+      container.innerHTML += `
+        <div class="product-card">
+          <img src="${product.image}" alt="${product.name}">
+          <h3>${product.name}</h3>
 
-  });
+          <a href="tel:8235093177" class="btn">
+            📞 Call Now
+          </a>
 
+          <a href="https://wa.me/918235093177" class="btn">
+            💬 WhatsApp
+          </a>
+        </div>
+      `;
+    });
+
+  } catch (err) {
+    console.error(err);
+    container.innerHTML = `<h3>${err.message}</h3>`;
+  }
 }
 
 loadProducts();
