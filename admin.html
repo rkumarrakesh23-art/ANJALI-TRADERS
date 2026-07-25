@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ANJALI TRADERS - Admin Panel</title>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="admin-panel">
+
+<h1>ANJALI TRADERS Admin Panel</h1>
+
+<input type="text" id="productName" placeholder="Scooter Name">
+
+<input type="file" id="productImage" accept="image/*">
+
+<button onclick="uploadProduct()">
+Upload Product
+</button>
+
+<hr>
+
+<div id="adminProducts"></div>
+
+</div>
+
+<script src="firebase.js"></script>
+
+</body>
+</html>
