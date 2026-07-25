@@ -1,48 +1,46 @@
-// Smooth Scroll
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-
-        const target = document.querySelector(this.getAttribute('href'));
-
-        if(target){
-            target.scrollIntoView({
-                behavior: "smooth"
-            });
-        }
-    });
-});
-
-// Header Shadow
-window.addEventListener("scroll", function(){
-
-    const header=document.querySelector(".header");
-
-    if(header){
-
-        if(window.scrollY>30){
-            header.style.boxShadow="0 5px 15px rgba(0,0,0,.2)";
-        }else{
-            header.style.boxShadow="none";
-        }
-
-    }
-
-});
-// Back To Top Button
-let mybutton = document.getElementById("topBtn");
-
-window.onscroll = function () {
-  if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
-    mybutton.style.display = "block";
-  } else {
-    mybutton.style.display = "none";
-  }
-};
-
-function topFunction() {
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth"
-  });
+const products = [
+{
+    name: "THUKRAL REVO",
+    image: "THUKRAL REVO.jpeg",
+    description: "Premium Electric Scooter"
+},
+{
+    name: "RED EV2",
+    image: "RED EV2.png",
+    description: "Comfort Ride"
+},
+{
+    name: "THUKRAL GRAND",
+    image: "THUKRAL GRAND.png",
+    description: "Stylish Design"
+},
+{
+    name: "BLUE ELECTRIC",
+    image: "BLUE ELECTRIC.png",
+    description: "Powerful EV Scooter"
 }
+];
+
+const container = document.getElementById("product-list");
+
+products.forEach(product => {
+
+const card = document.createElement("div");
+
+card.className = "product-card";
+
+card.innerHTML = `
+<img src="${product.image}" alt="${product.name}">
+
+<h3>${product.name}</h3>
+
+<p>${product.description}</p>
+
+<a href="tel:8235093177" class="btn">📞 Call Now</a>
+
+<a href="https://wa.me/918235093177" class="btn">💬 WhatsApp</a>
+`;
+
+container.appendChild(card);
+
+});
