@@ -1,46 +1,45 @@
-const products = [
-{
-    name: "THUKRAL REVO",
-    image: "THUKRAL REVO.jpeg",
-    description: "Premium Electric Scooter"
-},
-{
-    name: "RED EV2",
-    image: "RED EV2.png",
-    description: "Comfort Ride"
-},
-{
-    name: "THUKRAL GRAND",
-    image: "THUKRAL GRAND.png",
-    description: "Stylish Design"
-},
-{
-    name: "BLUE ELECTRIC",
-    image: "BLUE ELECTRIC.png",
-    description: "Powerful EV Scooter"
-}
-];
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDRYU05VxRB3B2PIp2OPGOcoIkS6BH8Usc",
+  authDomain: "anjali-traders-bc0e6.firebaseapp.com",
+  projectId: "anjali-traders-bc0e6",
+  storageBucket: "anjali-traders-bc0e6.firebasestorage.app",
+  messagingSenderId: "17008156965",
+  appId: "1:17008156965:web:51e29057d8da3a46f73acc"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 const container = document.getElementById("product-list");
 
-products.forEach(product => {
+async function loadProducts() {
 
-const card = document.createElement("div");
+  container.innerHTML = "";
 
-card.className = "product-card";
+  const snapshot = await getDocs(collection(db, "products"));
 
-card.innerHTML = `
-<img src="${product.image}" alt="${product.name}">
+  snapshot.forEach((doc) => {
 
-<h3>${product.name}</h3>
+    const product = doc.data();
 
-<p>${product.description}</p>
+    container.innerHTML += `
+      <div class="product-card">
+        <img src="${product.image}" alt="${product.name}">
+        <h3>${product.name}</h3>
+        <a href="tel:8235093177" class="btn">📞 Call Now</a>
+        <a href="https://wa.me/918235093177" class="btn">💬 WhatsApp</a>
+      </div>
+    `;
 
-<a href="tel:8235093177" class="btn">📞 Call Now</a>
+  });
 
-<a href="https://wa.me/918235093177" class="btn">💬 WhatsApp</a>
-`;
+}
 
-container.appendChild(card);
-
-});
+loadProducts();
