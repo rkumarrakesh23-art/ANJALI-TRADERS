@@ -1,22 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ANJALI TRADERS - Admin Panel</title>
-
-<link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-
 <div class="admin-panel">
 
 <h1>ANJALI TRADERS Admin Panel</h1>
 
 <input type="text" id="productName" placeholder="Scooter Name">
 
-<input type="file" id="productImage" accept="image/*">
+<input type="number" id="productPrice" placeholder="Price (₹)">
+
+<input type="text" id="productBrand" placeholder="Brand">
+
+<textarea id="productDescription" placeholder="Description"></textarea>
+
+<label>Image 1</label>
+<input type="file" id="image1" accept="image/*">
+
+<label>Image 2</label>
+<input type="file" id="image2" accept="image/*">
+
+<label>Image 3</label>
+<input type="file" id="image3" accept="image/*">
+
+<label>Image 4</label>
+<input type="file" id="image4" accept="image/*">
 
 <button onclick="uploadProduct()">
 Upload Product
@@ -29,6 +33,3 @@ Upload Product
 </div>
 
 <script type="module" src="firebase.js"></script>
-
-</body>
-</html>
