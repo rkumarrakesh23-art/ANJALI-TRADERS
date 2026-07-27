@@ -2,9 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebas
 import {
   getFirestore,
   collection,
-  getDocs,
-  getDoc,
-  doc
+  getDocs
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -81,3 +79,18 @@ if (slides.length > 0) {
     showSlide(current);
   }, 4000);
 }
+async function loadBanner() {
+  try {
+    const snapshot = await getDocs(collection(db, "banners"));
+
+    snapshot.forEach((docSnap) => {
+      const data = docSnap.data();
+      document.getElementById("bannerImage").src = data.image;
+    });
+
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+loadBanner();
