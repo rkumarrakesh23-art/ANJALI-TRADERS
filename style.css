@@ -36,13 +36,16 @@ body{
 nav a{
     color:#fff;
     text-decoration:none;
-    margin-left:25px;
+    margin-left:20px;
     font-weight:600;
-    transition:.3s;
+    padding:8px 12px;
+    border-radius:8px;
+    transition:0.3s;
 }
 
 nav a:hover{
-    color:#ffd54f;
+    background:#ffd54f;
+    color:#0d47a1;
 }
 
 /* Hero */
