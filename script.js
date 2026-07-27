@@ -57,22 +57,25 @@ async function loadProducts() {
   }
 }
 
-loadProducts();
-setTimeout(() => {
+loadProducts()
+loadProducts().then(() => {
   document.querySelectorAll(".product-card img").forEach(img => {
-    img.onclick = function () {
+    img.style.cursor = "pointer";
+
+    img.addEventListener("click", function () {
       document.getElementById("modalImage").src = this.src;
       document.getElementById("imageModal").style.display = "block";
-    };
+    });
   });
-}, 100);
-document.querySelector(".close").onclick = function () {
-  document.getElementById("imageModal").style.display = "none";
-};
+});
 
-document.getElementById("imageModal").onclick = function () {
-  this.style.display = "none";
-};
+document.querySelector(".close").addEventListener("click", () => {
+  document.getElementById("imageModal").style.display = "none";
+});
+
+document.getElementById("imageModal").addEventListener("click", () => {
+  document.getElementById("imageModal").style.display = "none";
+});
 // ===============================
 // Auto Banner Slider
 // ===============================
