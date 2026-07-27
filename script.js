@@ -61,6 +61,9 @@ loadProducts();
 const modal = document.getElementById("imageModal");
 const modalImg = document.getElementById("modalImage");
 const closeBtn = document.querySelector(".close");
+console.log(modal);
+console.log(modalImg);
+console.log(closeBtn);
 document.addEventListener("click", function(e) {
     if (e.target.matches(".product-card img")) {
         document.getElementById("imageModal").style.display = "block";
