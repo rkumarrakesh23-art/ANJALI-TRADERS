@@ -10,7 +10,18 @@ body{
     color:#222;
 }
 
-/* Header */
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 8%;
+    background:#0d47a1;
+    color:#fff;
+    position:sticky;
+    top:0;
+    z-index:999;
+    box-shadow:0 4px 12px rgba(0,0,0,.2);
+}
 
 
 
