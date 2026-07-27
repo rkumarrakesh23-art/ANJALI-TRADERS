@@ -242,8 +242,10 @@ nav a{
 .slide img{
     width:100%;
     height:420px;
-    object-fit:cover;
+    object-fit:contain;
     display:block;
+    background:#fff;
+}   
 }
 
 /* Mobile */
