@@ -9,7 +9,7 @@ const firebaseConfig = {
   apiKey: "...",
   authDomain: "anjali-traders-bc0e6.firebaseapp.com",
   projectId: "anjali-traders-bc0e6",
-  storageBucket: "anjali-traders-bc0e6.appspot.com",
+ storageBucket: "anjali-traders-bc0e6.appspot.com",
   messagingSenderId: "17008156965",
   appId: "1:17008156965:web:51e29057d8da3a46f73acc"
 };
