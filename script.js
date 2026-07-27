@@ -58,6 +58,24 @@ async function loadProducts() {
 }
 
 loadProducts();
+const modal = document.getElementById("imageModal");
+const modalImg = document.getElementById("modalImage");
+const closeBtn = document.querySelector(".close");
+
+document.addEventListener("click", (e) => {
+    if (e.target.tagName === "IMG" && e.target.closest(".product-card")) {
+        modal.style.display = "block";
+        modalImg.src = e.target.src;
+    }
+});
+
+closeBtn.onclick = () => {
+    modal.style.display = "none";
+};
+
+modal.onclick = () => {
+    modal.style.display = "none";
+};
 // ===============================
 // Auto Banner Slider
 // ===============================
