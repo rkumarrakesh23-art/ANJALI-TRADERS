@@ -39,6 +39,7 @@ snapshot.forEach((doc) => {
     <div class="product-card">
       <img src="${product.image}" alt="${product.name}">
       <h3>${product.name}</h3>
+      ${product.offer ? `<p class="offer">🔥 Offer: ${product.offer}</p>` : ""}
 
       <a href="tel:8235093177" class="btn">📞 Call Now</a>
 
