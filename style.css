@@ -342,3 +342,12 @@ nav a{
     background:#fff;
     padding:5px;
 }    
+.offer{
+    margin:0 15px 15px;
+    padding:10px;
+    background:#fff3cd;
+    color:#b26a00;
+    border-left:4px solid #ff9800;
+    border-radius:6px;
+    font-weight:600;
+}
