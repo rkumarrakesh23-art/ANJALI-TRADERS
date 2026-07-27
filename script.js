@@ -58,26 +58,21 @@ async function loadProducts() {
 }
 
 loadProducts();
-const modal = document.getElementById("imageModal");
-const modalImg = document.getElementById("modalImage");
-const closeBtn = document.querySelector(".close");
-console.log(modal);
-console.log(modalImg);
-console.log(closeBtn);
-document.addEventListener("click", function(e) {
-    if (e.target.matches(".product-card img")) {
-        document.getElementById("imageModal").style.display = "block";
-        document.getElementById("modalImage").src = e.target.src;
-    }
-});
+setTimeout(() => {
+  document.querySelectorAll(".product-card img").forEach(img => {
+    img.onclick = function () {
+      document.getElementById("modalImage").src = this.src;
+      document.getElementById("imageModal").style.display = "block";
+    };
+  });
+}, 100);
+document.querySelector(".close").onclick = function () {
+  document.getElementById("imageModal").style.display = "none";
+};
 
-document.querySelector(".close").addEventListener("click", function() {
-    document.getElementById("imageModal").style.display = "none";
-});
-
-document.getElementById("imageModal").addEventListener("click", function() {
-    this.style.display = "none";
-});
+document.getElementById("imageModal").onclick = function () {
+  this.style.display = "none";
+};
 // ===============================
 // Auto Banner Slider
 // ===============================
