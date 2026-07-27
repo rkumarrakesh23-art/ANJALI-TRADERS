@@ -32,33 +32,37 @@ async function loadProducts() {
       return;
     }
 
-    snapshot.forEach((doc) => {
-      const product = doc.data();
+snapshot.forEach((doc) => {
+  const product = doc.data();
 
-      container.innerHTML += `
-        <div class="product-card">
-          <img src="${product.image}" alt="${product.name}">
-          <h3>${product.name}</h3>
+  container.innerHTML += `
+    <div class="product-card">
+      <img src="${product.image}" alt="${product.name}">
+      <h3>${product.name}</h3>
 
-          <a href="tel:8235093177" class="btn">
-            📞 Call Now
-          </a>
+      <a href="tel:8235093177" class="btn">📞 Call Now</a>
 
-          <a href="https://wa.me/918235093177" class="btn">
-            💬 WhatsApp
-          </a>
-        </div>
-      `;
-    });
+      <a href="https://wa.me/918235093177" class="btn">💬 WhatsApp</a>
+    </div>
+  `;
+});
+
+document.querySelectorAll(".product-card img").forEach(img => {
+  img.style.cursor = "pointer";
+
+  img.onclick = function () {
+    document.getElementById("modalImage").src = this.src;
+    document.getElementById("imageModal").style.display = "block";
+  };
+});  
 
   } catch (err) {
     console.error(err);
     container.innerHTML = `<h3>${err.message}</h3>`;
   }
 }
-
-loadProducts()
 loadProducts().then(() => {
+  
   document.querySelectorAll(".product-card img").forEach(img => {
     img.style.cursor = "pointer";
 
