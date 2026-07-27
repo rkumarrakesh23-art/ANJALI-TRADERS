@@ -295,9 +295,6 @@ nav a{
     }
 }    
 
-.slide img{
-    height:220px;
-}
 .image-modal{
     display:none;
     position:fixed;
