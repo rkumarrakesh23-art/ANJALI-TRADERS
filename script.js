@@ -61,21 +61,20 @@ loadProducts();
 const modal = document.getElementById("imageModal");
 const modalImg = document.getElementById("modalImage");
 const closeBtn = document.querySelector(".close");
-
-document.addEventListener("click", (e) => {
-    if (e.target.tagName === "IMG" && e.target.closest(".product-card")) {
-        modal.style.display = "block";
-        modalImg.src = e.target.src;
+document.addEventListener("click", function(e) {
+    if (e.target.matches(".product-card img")) {
+        document.getElementById("imageModal").style.display = "block";
+        document.getElementById("modalImage").src = e.target.src;
     }
 });
 
-closeBtn.onclick = () => {
-    modal.style.display = "none";
-};
+document.querySelector(".close").addEventListener("click", function() {
+    document.getElementById("imageModal").style.display = "none";
+});
 
-modal.onclick = () => {
-    modal.style.display = "none";
-};
+document.getElementById("imageModal").addEventListener("click", function() {
+    this.style.display = "none";
+});
 // ===============================
 // Auto Banner Slider
 // ===============================
