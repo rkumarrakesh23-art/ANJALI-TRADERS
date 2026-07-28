@@ -44,19 +44,18 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-window.uploadProduct = async function () {
+const name = document.getElementById("productName").value;
+const price = document.getElementById("productPrice").value;
+const brand = document.getElementById("productBrand").value;
+const description = document.getElementById("productDescription").value;
+const offer = document.getElementById("productOffer").value;
 
-  const name = document.getElementById("productName").value;
-  const price = document.getElementById("productPrice").value;
-  const brand = document.getElementById("productBrand").value;
-  const description = document.getElementById("productDescription").value;
+const file = document.getElementById("image1").files[0];
 
-  const file = document.getElementById("image1").files[0];
-
-  if (!name || !price || !brand || !description || !file) {
-    alert("Please fill all fields.");
-    return;
-  }
+if (!name || !price || !brand || !description || !offer || !file) {
+  alert("Please fill all fields.");
+  return;
+}
 
   const formData = new FormData();
   formData.append("file", file);
@@ -73,15 +72,14 @@ window.uploadProduct = async function () {
   const img = await res.json();
 
   await addDoc(collection(db, "products"), {
-    name,
-    price,
-    const offer = document.getElementById("productOffer").value;
-    brand,
-    description,
-    if (!name || !price || !brand || !description || !offer || !file) {
-  alert("Please fill all fields.");
-  return;
-}
+  name,
+  price,
+  brand,
+  description,
+  offer,
+  image: img.secure_url,
+  createdAt: new Date()
+});
     image: img.secure_url,
     createdAt: new Date()
   });
