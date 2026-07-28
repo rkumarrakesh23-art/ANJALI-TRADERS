@@ -91,3 +91,46 @@ window.uploadProduct = async function () {
 
   location.reload();
 };
+// ==============================
+// Load All Products
+// ==============================
+
+async function loadAdminProducts() {
+
+  const container = document.getElementById("adminProducts");
+
+  container.innerHTML = "";
+
+  const snapshot = await getDocs(collection(db, "products"));
+
+  snapshot.forEach((docSnap) => {
+
+    const product = docSnap.data();
+
+    container.innerHTML += `
+      <div class="product-card" style="margin:20px 0;padding:15px;">
+
+        <img src="${product.image}" width="150">
+
+        <h3>${product.name}</h3>
+
+        <p>₹${product.price}</p>
+
+        <p>${product.offer}</p>
+
+        <button onclick="editProduct('${docSnap.id}')">
+          ✏️ Edit
+        </button>
+
+        <button onclick="deleteProduct('${docSnap.id}')">
+          🗑️ Delete
+        </button>
+
+      </div>
+    `;
+
+  });
+
+}
+
+loadAdminProducts();
