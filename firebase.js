@@ -134,3 +134,19 @@ async function loadAdminProducts() {
 }
 
 loadAdminProducts();
+// ==============================
+// Delete Product
+// ==============================
+
+window.deleteProduct = async function(id) {
+
+  const ok = confirm("Are you sure you want to delete this product?");
+
+  if (!ok) return;
+
+  await deleteDoc(doc(db, "products", id));
+
+  alert("✅ Product Deleted");
+
+  loadAdminProducts();
+};
