@@ -23,10 +23,10 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
 const CLOUD_NAME = "ayr3jtsa";
 const UPLOAD_PRESET = "anjali_traders_2026";
-const auth = getAuth(app);
 
 onAuthStateChanged(auth, (user) => {
   if (!user) {
