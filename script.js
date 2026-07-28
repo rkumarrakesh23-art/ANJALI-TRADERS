@@ -122,3 +122,24 @@ async function loadBanner() {
 }
 
 loadBanner();
+document.querySelectorAll(".product-slider").forEach(slider => {
+
+    const imgs = slider.querySelectorAll("img");
+
+    if(imgs.length === 0) return;
+
+    let i = 0;
+
+    imgs[0].classList.add("active");
+
+    setInterval(() => {
+
+        imgs[i].classList.remove("active");
+
+        i = (i + 1) % imgs.length;
+
+        imgs[i].classList.add("active");
+
+    }, 2500);
+
+});
