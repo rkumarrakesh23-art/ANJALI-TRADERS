@@ -75,8 +75,13 @@ window.uploadProduct = async function () {
   await addDoc(collection(db, "products"), {
     name,
     price,
+    const offer = document.getElementById("productOffer").value;
     brand,
     description,
+    if (!name || !price || !brand || !description || !offer || !file) {
+  alert("Please fill all fields.");
+  return;
+}
     image: img.secure_url,
     createdAt: new Date()
   });
