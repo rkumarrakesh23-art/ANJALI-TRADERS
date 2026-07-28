@@ -26,6 +26,23 @@ const db = getFirestore(app);
 
 const CLOUD_NAME = "ayr3jtsa";
 const UPLOAD_PRESET = "anjali_traders_2026";
+const auth = getAuth(app);
+
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    const email = prompt("Enter Admin Email");
+    const password = prompt("Enter Password");
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        alert("✅ Login Successful");
+      })
+      .catch(() => {
+        alert("❌ Wrong Email or Password");
+        window.location.href = "index.html";
+      });
+  }
+});
 
 window.uploadProduct = async function () {
 
