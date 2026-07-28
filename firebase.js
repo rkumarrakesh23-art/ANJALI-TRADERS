@@ -150,3 +150,36 @@ window.deleteProduct = async function(id) {
 
   loadAdminProducts();
 };
+// ==============================
+// Edit Product
+// ==============================
+
+window.editProduct = async function(id) {
+
+  const newName = prompt("Enter New Scooter Name");
+  if (newName === null) return;
+
+  const newPrice = prompt("Enter New Price");
+  if (newPrice === null) return;
+
+  const newBrand = prompt("Enter New Brand");
+  if (newBrand === null) return;
+
+  const newOffer = prompt("Enter New Offer");
+  if (newOffer === null) return;
+
+  const newDescription = prompt("Enter New Description");
+  if (newDescription === null) return;
+
+  await updateDoc(doc(db, "products", id), {
+    name: newName,
+    price: newPrice,
+    brand: newBrand,
+    offer: newOffer,
+    description: newDescription
+  });
+
+  alert("✅ Product Updated");
+
+  loadAdminProducts();
+};
