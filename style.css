@@ -351,3 +351,18 @@ nav a{
     border-radius:6px;
     font-weight:600;
 }
+.product-slider{
+    position:relative;
+    overflow:hidden;
+}
+
+.product-slider img{
+    width:100%;
+    height:320px;
+    object-fit:contain;
+    display:none;
+}
+
+.product-slider img.active{
+    display:block;
+}
