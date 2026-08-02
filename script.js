@@ -1,4 +1,3 @@
-```javascript
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 
 import {
@@ -13,7 +12,7 @@ import {
 ========================= */
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDRYU05VxRB3B2PIp2OPGOcoIkS6BH8Usc",
+    apiKey: "AIzaSyDRYU05VxRB3BPIp2OPGOcoIkS6BH8Usc",
     authDomain: "anjali-traders-bc0e6.firebaseapp.com",
     projectId: "anjali-traders-bc0e6",
     storageBucket: "anjali-traders-bc0e6.appspot.com",
@@ -35,14 +34,18 @@ async function loadProducts() {
 
     try {
 
-        container.innerHTML = "";
+        if (!container) {
+            console.error("product-list not found in HTML");
+            return;
+        }
+
+        container.innerHTML = "<h3>Loading Products...</h3>";
 
         const snapshot = await getDocs(
             collection(db, "products")
         );
 
         console.log("Products found:", snapshot.size);
-
 
         if (snapshot.empty) {
 
@@ -52,13 +55,14 @@ async function loadProducts() {
             return;
         }
 
+        container.innerHTML = "";
 
         snapshot.forEach((doc) => {
 
             const product = doc.data();
 
             const images =
-                product.images && product.images.length
+                Array.isArray(product.images) && product.images.length > 0
                     ? product.images
                     : product.image
                         ? [product.image]
@@ -71,18 +75,28 @@ async function loadProducts() {
 
                     <div class="product-slider">
 
-                        ${images.map((img, index) => `
-                            <img
-                                src="${img}"
-                                class="slide-img ${index === 0 ? "active" : ""}"
-                                alt="${product.name || "Electric Scooter"}"
-                            >
-                        `).join("")}
+                        ${
+                            images.length > 0
+                            ? images.map((img, index) => `
+                                <img
+                                    src="${img}"
+                                    class="slide-img ${index === 0 ? "active" : ""}"
+                                    alt="${product.name || "Electric Scooter"}"
+                                >
+                            `).join("")
+                            : `
+                                <p style="padding:20px;">
+                                    No Image Available
+                                </p>
+                            `
+                        }
 
                     </div>
 
 
-                    <h3>${product.name || "Electric Scooter"}</h3>
+                    <h3>
+                        ${product.name || "Electric Scooter"}
+                    </h3>
 
 
                     <p>
@@ -93,7 +107,9 @@ async function loadProducts() {
 
                     ${
                         product.offer
-                        ? `<p class="offer">🔥 Offer: ${product.offer}</p>`
+                        ? `<p class="offer">
+                                🔥 Offer: ${product.offer}
+                           </p>`
                         : ""
                     }
 
@@ -139,9 +155,13 @@ async function loadProducts() {
                     const modalImage =
                         document.getElementById("modalImage");
 
-                    modalImage.src = this.src;
+                    if (modal && modalImage) {
 
-                    modal.style.display = "block";
+                        modalImage.src = this.src;
+
+                        modal.style.display = "block";
+
+                    }
 
                 });
 
@@ -163,7 +183,6 @@ async function loadProducts() {
 
                 let current = 0;
 
-
                 setInterval(() => {
 
                     imgs[current].classList.remove("active");
@@ -182,8 +201,12 @@ async function loadProducts() {
 
         console.error("Product Error:", err);
 
-        container.innerHTML =
-            `<h3>Error: ${err.message}</h3>`;
+        if (container) {
+
+            container.innerHTML =
+                `<h3>Error: ${err.message}</h3>`;
+
+        }
 
     }
 
@@ -203,27 +226,31 @@ async function loadBanner() {
                 collection(db, "banners")
             );
 
-
         console.log(
             "Banners found:",
             snapshot.size
         );
 
-
         const bannerImage =
             document.getElementById("bannerImage");
 
+        if (!bannerImage) {
+
+            console.error("bannerImage not found in HTML");
+
+            return;
+
+        }
 
         if (snapshot.empty) {
 
             bannerImage.style.display = "none";
 
             return;
+
         }
 
-
         const banners = [];
-
 
         snapshot.forEach(docSnap => {
 
@@ -243,6 +270,7 @@ async function loadBanner() {
             bannerImage.style.display = "none";
 
             return;
+
         }
 
 
@@ -252,6 +280,8 @@ async function loadBanner() {
 
         bannerImage.src =
             banners[currentBanner];
+
+        bannerImage.style.display = "block";
 
 
         /* Multiple Banner Slider */
@@ -294,7 +324,7 @@ const closeButton =
     document.querySelector(".close");
 
 
-if (closeButton) {
+if (closeButton && modal) {
 
     closeButton.addEventListener(
         "click",
@@ -327,10 +357,9 @@ if (modal) {
 
 
 /* =========================
-   START
+   START WEBSITE
 ========================= */
 
 loadProducts();
 
 loadBanner();
-```
