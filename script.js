@@ -1,145 +1,336 @@
+```javascript
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+
 import {
-  getFirestore,
-  collection,
-  getDocs
+    getFirestore,
+    collection,
+    getDocs
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
+
+/* =========================
+   FIREBASE CONFIG
+========================= */
+
 const firebaseConfig = {
-  apiKey: "AIzaSyDRYU05VxRB3B2PIp2OPGOcoIkS6BH8Usc",
-  authDomain: "anjali-traders-bc0e6.firebaseapp.com",
-  projectId: "anjali-traders-bc0e6",
-  storageBucket: "anjali-traders-bc0e6.appspot.com",
-  messagingSenderId: "17008156965",
-  appId: "1:17008156965:web:51e29057d8da3a46f73acc"
+    apiKey: "AIzaSyDRYU05VxRB3B2PIp2OPGOcoIkS6BH8Usc",
+    authDomain: "anjali-traders-bc0e6.firebaseapp.com",
+    projectId: "anjali-traders-bc0e6",
+    storageBucket: "anjali-traders-bc0e6.appspot.com",
+    messagingSenderId: "17008156965",
+    appId: "1:17008156965:web:51e29057d8da3a46f73acc"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+
+/* =========================
+   PRODUCT LOAD
+========================= */
+
 const container = document.getElementById("product-list");
 
 async function loadProducts() {
-  try {
-    container.innerHTML = "";
 
-    const snapshot = await getDocs(collection(db, "products"));
+    try {
 
-    console.log("Products found:", snapshot.size);
+        container.innerHTML = "";
 
-    if (snapshot.empty) {
-      container.innerHTML = "<h2>No Products Available</h2>";
-      return;
+        const snapshot = await getDocs(
+            collection(db, "products")
+        );
+
+        console.log("Products found:", snapshot.size);
+
+
+        if (snapshot.empty) {
+
+            container.innerHTML =
+                "<h2>No Products Available</h2>";
+
+            return;
+        }
+
+
+        snapshot.forEach((doc) => {
+
+            const product = doc.data();
+
+            const images =
+                product.images && product.images.length
+                    ? product.images
+                    : product.image
+                        ? [product.image]
+                        : [];
+
+
+            container.innerHTML += `
+
+                <div class="product-card">
+
+                    <div class="product-slider">
+
+                        ${images.map((img, index) => `
+                            <img
+                                src="${img}"
+                                class="slide-img ${index === 0 ? "active" : ""}"
+                                alt="${product.name || "Electric Scooter"}"
+                            >
+                        `).join("")}
+
+                    </div>
+
+
+                    <h3>${product.name || "Electric Scooter"}</h3>
+
+
+                    <p>
+                        <strong>💰 Price:</strong>
+                        ₹${product.price || "Contact Us"}
+                    </p>
+
+
+                    ${
+                        product.offer
+                        ? `<p class="offer">🔥 Offer: ${product.offer}</p>`
+                        : ""
+                    }
+
+
+                    <a
+                        href="tel:8235093177"
+                        class="btn"
+                    >
+                        📞 Call Now
+                    </a>
+
+
+                    <a
+                        href="https://wa.me/918235093177"
+                        class="btn"
+                        target="_blank"
+                    >
+                        💬 WhatsApp
+                    </a>
+
+                </div>
+
+            `;
+
+        });
+
+
+        /* =========================
+           PRODUCT IMAGE POPUP
+        ========================= */
+
+        document
+            .querySelectorAll(".product-card img")
+            .forEach(img => {
+
+                img.style.cursor = "pointer";
+
+                img.addEventListener("click", function () {
+
+                    const modal =
+                        document.getElementById("imageModal");
+
+                    const modalImage =
+                        document.getElementById("modalImage");
+
+                    modalImage.src = this.src;
+
+                    modal.style.display = "block";
+
+                });
+
+            });
+
+
+        /* =========================
+           PRODUCT IMAGE SLIDER
+        ========================= */
+
+        document
+            .querySelectorAll(".product-slider")
+            .forEach(slider => {
+
+                const imgs =
+                    slider.querySelectorAll("img");
+
+                if (imgs.length <= 1) return;
+
+                let current = 0;
+
+
+                setInterval(() => {
+
+                    imgs[current].classList.remove("active");
+
+                    current =
+                        (current + 1) % imgs.length;
+
+                    imgs[current].classList.add("active");
+
+                }, 2500);
+
+            });
+
+
+    } catch (err) {
+
+        console.error("Product Error:", err);
+
+        container.innerHTML =
+            `<h3>Error: ${err.message}</h3>`;
+
     }
 
-snapshot.forEach((doc) => {
-  const product = doc.data();
-
-  container.innerHTML += `
-    <div class="product
-    <div class="product-slider">
-  ${(product.images || [product.image]).map(img => `
-    <img src="${img}" class="slide-img">
-  `).join("")}
-</div>
-      <h3>${product.name}</h3>
-      <p><strong>💰 Price:</strong> ₹${product.price}</p>
-      ${product.offer ? `<p class="offer">🔥 Offer: ${product.offer}</p>` : ""}
-
-      <a href="tel:8235093177" class="btn">📞 Call Now</a>
-
-      <a href="https://wa.me/918235093177" class="btn">💬 WhatsApp</a>
-    </div>
-  `;
-});
-
-document.querySelectorAll(".product-card img").forEach(img => {
-  img.style.cursor = "pointer";
-
-  img.onclick = function () {
-    document.getElementById("modalImage").src = this.src;
-    document.getElementById("imageModal").style.display = "block";
-  };
-});  
-
-  } catch (err) {
-    console.error(err);
-    container.innerHTML = `<h3>${err.message}</h3>`;
-  }
 }
-loadProducts().then(() => {
-  
-  document.querySelectorAll(".product-card img").forEach(img => {
-    img.style.cursor = "pointer";
 
-    img.addEventListener("click", function () {
-      document.getElementById("modalImage").src = this.src;
-      document.getElementById("imageModal").style.display = "block";
-    });
-  });
-});
 
-document.querySelector(".close").addEventListener("click", () => {
-  document.getElementById("imageModal").style.display = "none";
-});
+/* =========================
+   BANNER LOAD
+========================= */
 
-document.getElementById("imageModal").addEventListener("click", () => {
-  document.getElementById("imageModal").style.display = "none";
-});
-// ===============================
-// Auto Banner Slider
-// ===============================
-
-const slides = document.querySelectorAll(".slide");
-
-if (slides.length > 0) {
-  let current = 0;
-
-  function showSlide(index) {
-    slides.forEach((slide) => slide.classList.remove("active"));
-    slides[index].classList.add("active");
-  }
-
-  showSlide(0);
-
-  setInterval(() => {
-    current = (current + 1) % slides.length;
-    showSlide(current);
-  }, 4000);
-}
 async function loadBanner() {
-  try {
-    const snapshot = await getDocs(collection(db, "banners"));
 
-    snapshot.forEach((docSnap) => {
-      const data = docSnap.data();
-      document.getElementById("bannerImage").src = data.image;
-    });
+    try {
 
-  } catch (e) {
-    console.log(e);
-  }
+        const snapshot =
+            await getDocs(
+                collection(db, "banners")
+            );
+
+
+        console.log(
+            "Banners found:",
+            snapshot.size
+        );
+
+
+        const bannerImage =
+            document.getElementById("bannerImage");
+
+
+        if (snapshot.empty) {
+
+            bannerImage.style.display = "none";
+
+            return;
+        }
+
+
+        const banners = [];
+
+
+        snapshot.forEach(docSnap => {
+
+            const data = docSnap.data();
+
+            if (data.image) {
+
+                banners.push(data.image);
+
+            }
+
+        });
+
+
+        if (banners.length === 0) {
+
+            bannerImage.style.display = "none";
+
+            return;
+        }
+
+
+        /* First Banner */
+
+        let currentBanner = 0;
+
+        bannerImage.src =
+            banners[currentBanner];
+
+
+        /* Multiple Banner Slider */
+
+        if (banners.length > 1) {
+
+            setInterval(() => {
+
+                currentBanner =
+                    (currentBanner + 1) % banners.length;
+
+                bannerImage.src =
+                    banners[currentBanner];
+
+            }, 4000);
+
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            "Banner Error:",
+            error
+        );
+
+    }
+
 }
+
+
+/* =========================
+   IMAGE MODAL CLOSE
+========================= */
+
+const modal =
+    document.getElementById("imageModal");
+
+const closeButton =
+    document.querySelector(".close");
+
+
+if (closeButton) {
+
+    closeButton.addEventListener(
+        "click",
+        () => {
+
+            modal.style.display = "none";
+
+        }
+    );
+
+}
+
+
+if (modal) {
+
+    modal.addEventListener(
+        "click",
+        (event) => {
+
+            if (event.target === modal) {
+
+                modal.style.display = "none";
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+loadProducts();
 
 loadBanner();
-document.querySelectorAll(".product-slider").forEach(slider => {
-
-    const imgs = slider.querySelectorAll("img");
-
-    if(imgs.length === 0) return;
-
-    let i = 0;
-
-    imgs[0].classList.add("active");
-
-    setInterval(() => {
-
-        imgs[i].classList.remove("active");
-
-        i = (i + 1) % imgs.length;
-
-        imgs[i].classList.add("active");
-
-    }, 2500);
-
-});
+```
