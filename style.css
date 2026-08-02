@@ -1,3 +1,4 @@
+```css
 *{
     margin:0;
     padding:0;
@@ -5,16 +6,27 @@
     font-family:'Poppins',sans-serif;
 }
 
+html{
+    scroll-behavior:smooth;
+}
+
 body{
     background:#f5f7fa;
     color:#222;
+    overflow-x:hidden;
 }
 
+
+/* =========================
+   HEADER
+========================= */
+
 .header{
+    width:100%;
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:15px 8%;
+    padding:12px 6%;
     background:#0d47a1;
     color:#fff;
     position:sticky;
@@ -23,24 +35,44 @@ body{
     box-shadow:0 4px 12px rgba(0,0,0,.2);
 }
 
+.logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
 
+.logo-img{
+    width:65px;
+    height:65px;
+    object-fit:contain;
+    border-radius:10px;
+    background:#fff;
+    padding:5px;
+}
 
 .logo h2{
-    font-size:28px;
+    font-size:26px;
+    line-height:1.2;
 }
 
 .logo p{
-    font-size:14px;
+    font-size:13px;
+    margin-top:3px;
+}
+
+nav{
+    display:flex;
+    align-items:center;
+    gap:8px;
 }
 
 nav a{
     color:#fff;
     text-decoration:none;
-    margin-left:20px;
     font-weight:600;
-    padding:8px 12px;
+    padding:9px 12px;
     border-radius:8px;
-    transition:0.3s;
+    transition:.3s;
 }
 
 nav a:hover{
@@ -48,22 +80,30 @@ nav a:hover{
     color:#0d47a1;
 }
 
-/* Hero */
+
+/* =========================
+   HERO
+========================= */
 
 .hero{
-    height:80vh;
+    min-height:70vh;
     display:flex;
     align-items:center;
     justify-content:center;
     text-align:center;
     background:linear-gradient(135deg,#1565c0,#42a5f5);
     color:#fff;
-    padding:20px;
+    padding:50px 20px;
+}
+
+.hero-content{
+    max-width:900px;
 }
 
 .hero h1{
     font-size:48px;
-    margin-bottom:15px;
+    line-height:1.2;
+    margin-bottom:18px;
 }
 
 .hero p{
@@ -71,10 +111,15 @@ nav a:hover{
     margin-bottom:25px;
 }
 
+
+/* =========================
+   BUTTON
+========================= */
+
 .btn{
     display:inline-block;
-    padding:14px 28px;
-    margin:10px;
+    padding:12px 22px;
+    margin:8px;
     background:#ff9800;
     color:#fff;
     border-radius:8px;
@@ -85,70 +130,162 @@ nav a:hover{
 
 .btn:hover{
     background:#f57c00;
+    transform:translateY(-2px);
 }
 
-/* Section */
+
+/* =========================
+   SECTIONS
+========================= */
 
 section{
-    padding:70px 8%;
+    padding:60px 6%;
 }
 
 section h2{
     text-align:center;
-    margin-bottom:35px;
+    margin-bottom:30px;
     font-size:34px;
 }
 
-/* Product */
+
+/* =========================
+   BANNER
+========================= */
+
+.banner-section{
+    padding:30px 3%;
+    background:#f5f7fa;
+}
+
+.banner-slider{
+    width:100%;
+    max-width:1200px;
+    margin:0 auto;
+    background:#fff;
+    border-radius:15px;
+    overflow:hidden;
+    box-shadow:0 8px 25px rgba(0,0,0,.15);
+}
+
+.slide{
+    display:none;
+    width:100%;
+}
+
+.slide.active{
+    display:block;
+}
+
+.slide img{
+    width:100%;
+    max-width:100%;
+    height:auto;
+    max-height:500px;
+    object-fit:contain;
+    display:block;
+    margin:auto;
+}
+
+
+/* =========================
+   PRODUCTS
+========================= */
 
 #product-list{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    grid-template-columns:repeat(auto-fit,minmax(270px,1fr));
     gap:25px;
+    max-width:1200px;
+    margin:auto;
 }
 
 .product-card{
     background:#fff;
-    border-radius:12px;
+    border-radius:14px;
     overflow:hidden;
     box-shadow:0 5px 15px rgba(0,0,0,.15);
     transition:.3s;
 }
 
 .product-card:hover{
-    transform:translateY(-8px);
+    transform:translateY(-6px);
 }
 
-.product-card img{
+.product-slider{
+    position:relative;
+    width:100%;
+    height:320px;
+    overflow:hidden;
+    background:#fff;
+}
+
+.product-slider img{
     width:100%;
     height:320px;
     object-fit:contain;
-    background:#fff;
+    display:none;
     padding:10px;
     cursor:pointer;
 }
+
+.product-slider img.active{
+    display:block;
+}
+
 .product-card h3{
-    padding:15px;
+    padding:15px 15px 5px;
+    font-size:21px;
 }
 
 .product-card p{
-    padding:0 15px 15px;
-}
-.product-card img{
-    cursor:pointer;
+    padding:0 15px 10px;
 }
 
-/* About */
+.offer{
+    margin:0 15px 10px;
+    padding:10px;
+    background:#fff3cd;
+    color:#b26a00;
+    border-left:4px solid #ff9800;
+    border-radius:6px;
+    font-weight:600;
+}
+
+
+/* =========================
+   ABOUT
+========================= */
 
 #about{
     background:#fff;
     text-align:center;
 }
 
-/* Contact */
+#about p{
+    max-width:850px;
+    margin:auto;
+    line-height:1.8;
+    font-size:17px;
+}
+
+
+/* =========================
+   CONTACT
+========================= */
 
 #contact{
     text-align:center;
+}
+
+#contact p{
+    margin:10px 0;
+    font-size:17px;
+}
+
+#contact a{
+    color:#1565c0;
+    text-decoration:none;
 }
 
 .social{
@@ -156,6 +293,7 @@ section h2{
 }
 
 .social a{
+    display:inline-block;
     font-size:30px;
     margin:0 12px;
     color:#1565c0;
@@ -164,9 +302,13 @@ section h2{
 
 .social a:hover{
     color:#ff9800;
+    transform:scale(1.15);
 }
 
-/* Footer */
+
+/* =========================
+   FOOTER
+========================= */
 
 footer{
     background:#0d47a1;
@@ -175,32 +317,76 @@ footer{
     padding:20px;
 }
 
-/* Mobile */
 
-@media(max-width:768px){
+/* =========================
+   WHATSAPP FLOAT
+========================= */
 
-.header{
-    flex-direction:column;
-}
-
-nav{
-    margin-top:15px;
-}
-
-nav a{
-    display:inline-block;
-    margin:8px;
-}
-
-.hero h1{
+.whatsapp-float{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    width:60px;
+    height:60px;
+    background:#25D366;
+    color:#fff !important;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     font-size:34px;
+    text-decoration:none;
+    box-shadow:0 6px 15px rgba(0,0,0,.25);
+    z-index:1000;
+    transition:.3s;
 }
 
-.hero p{
-    font-size:18px;
+.whatsapp-float:hover{
+    transform:scale(1.1);
 }
 
+
+/* =========================
+   IMAGE MODAL
+========================= */
+
+.image-modal{
+    display:none;
+    position:fixed;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.9);
+    z-index:9999;
 }
+
+.modal-content{
+    display:block;
+    max-width:90%;
+    max-height:85%;
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    object-fit:contain;
+}
+
+.close{
+    position:absolute;
+    top:15px;
+    right:25px;
+    color:#fff;
+    font-size:45px;
+    cursor:pointer;
+    z-index:10000;
+}
+
+
+/* =========================
+   ADMIN PANEL
+========================= */
+
 .admin-panel{
     max-width:700px;
     margin:30px auto;
@@ -220,75 +406,121 @@ nav a{
     height:120px;
     resize:vertical;
 }
+
+
 /* =========================
-   Banner Slider
+   MOBILE
 ========================= */
 
-.banner-slider{
-    width:100%;
-    max-width:1200px;
-    margin:30px auto;
-    padding:10px;
-    background:#fff;
-    border-radius:15px;
-    box-shadow:0 8px 25px rgba(0,0,0,.15);
-}
+@media(max-width:768px){
 
-.slide{
-    display:none;
-}
+    .header{
+        padding:10px 15px;
+        flex-direction:column;
+        gap:10px;
+    }
 
-.slide.active{
-    display:block;
-}
+    .logo{
+        width:100%;
+        justify-content:center;
+    }
 
-.slide img{
-    width:100%;
-    height:auto;
-    max-height:600px;
-    object-fit:contain;
-    display:block;
-    margin:auto;
-}
+    .logo-img{
+        width:55px;
+        height:55px;
+    }
+
+    .logo h2{
+        font-size:21px;
+    }
+
+    .logo p{
+        font-size:11px;
+    }
+
+    nav{
+        width:100%;
+        justify-content:center;
+        flex-wrap:wrap;
+        gap:3px;
+    }
+
+    nav a{
+        font-size:13px;
+        padding:7px 9px;
+    }
 
 
-/* Mobile */
+    /* Hero */
 
-@media (max-width:768px){
+    .hero{
+        min-height:55vh;
+        padding:40px 15px;
+    }
+
+    .hero h1{
+        font-size:30px;
+    }
+
+    .hero p{
+        font-size:16px;
+    }
+
+    .btn{
+        padding:11px 16px;
+        font-size:14px;
+        margin:5px;
+    }
+
+
+    /* Sections */
+
+    section{
+        padding:45px 15px;
+    }
+
+    section h2{
+        font-size:28px;
+        margin-bottom:25px;
+    }
+
+
+    /* Banner */
+
+    .banner-section{
+        padding:15px 10px;
+    }
+
     .banner-slider{
-        margin:20px;
+        border-radius:10px;
     }
 
     .slide img{
-        height:220px;
+        width:100%;
+        height:auto;
+        max-height:300px;
+        object-fit:contain;
     }
-}
-/* Floating WhatsApp Button */
 
-.whatsapp-float{
-    position:fixed;
-    right:20px;
-    bottom:20px;
-    width:60px;
-    height:60px;
-    background:#25D366;
-    color:#fff;
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:34px;
-    text-decoration:none;
-    box-shadow:0 6px 15px rgba(0,0,0,.25);
-    z-index:1000;
-    transition:.3s;
-}
 
-.whatsapp-float:hover{
-    transform:scale(1.1);
-}
+    /* Products */
 
-@media(max-width:768px){
+    #product-list{
+        grid-template-columns:1fr;
+        gap:20px;
+    }
+
+    .product-slider{
+        height:280px;
+    }
+
+    .product-slider img{
+        height:280px;
+    }
+
+
+    /* WhatsApp */
+
     .whatsapp-float{
         width:55px;
         height:55px;
@@ -296,73 +528,54 @@ nav a{
         right:15px;
         bottom:15px;
     }
-}    
 
-.image-modal{
-    display:none;
-    position:fixed;
-    left:0;
-    top:0;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,.9);
-    z-index:9999;
-}
 
-.modal-content{
-    display:block;
-    margin:auto;
-    max-width:90%;
-    max-height:90%;
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
+    /* Modal */
+
+    .modal-content{
+        max-width:95%;
+        max-height:80%;
+    }
+
+    .close{
+        top:10px;
+        right:18px;
+        font-size:40px;
+    }
+
 }
 
-.close{
-    position:absolute;
-    top:20px;
-    right:30px;
-    color:white;
-    font-size:40px;
-    cursor:pointer;
-}
-.logo{
-    display:flex;
-    align-items:center;
-    gap:15px;
-}
 
-.logo-img{
-    width:70px;
-    height:70px;
-    object-fit:contain;
-    border-radius:10px;
-    background:#fff;
-    padding:5px;
-}    
-.offer{
-    margin:0 15px 15px;
-    padding:10px;
-    background:#fff3cd;
-    color:#b26a00;
-    border-left:4px solid #ff9800;
-    border-radius:6px;
-    font-weight:600;
-}
-.product-slider{
-    position:relative;
-    overflow:hidden;
-}
+/* =========================
+   SMALL MOBILE
+========================= */
 
-.product-slider img{
-    width:100%;
-    height:320px;
-    object-fit:contain;
-    display:none;
-}
+@media(max-width:400px){
 
-.product-slider img.active{
-    display:block;
+    .logo h2{
+        font-size:18px;
+    }
+
+    nav a{
+        font-size:12px;
+        padding:6px 7px;
+    }
+
+    .hero h1{
+        font-size:25px;
+    }
+
+    .hero p{
+        font-size:14px;
+    }
+
+    .product-slider{
+        height:250px;
+    }
+
+    .product-slider img{
+        height:250px;
+    }
+
 }
+```
