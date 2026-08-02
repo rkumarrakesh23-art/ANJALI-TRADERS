@@ -71,9 +71,9 @@ async function loadProducts() {
 
             container.innerHTML += `
 
-                <div class="product-card">
+                <div class="product-card">-card">
 
-                    <div class="product-slider">
+                    <div class="product-card">-slider">
 
                         ${
                             images.length > 0
