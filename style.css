@@ -525,3 +525,157 @@ footer{
     visibility: visible !important;
     opacity: 1 !important;
 }
+/* =========================
+   PRODUCT GALLERY
+========================= */
+
+.product-gallery {
+    min-height: 320px !important;
+}
+
+.product-gallery .product-main-image {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.product-gallery button {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+
+/* =========================
+   FULL SCREEN GALLERY
+========================= */
+
+#galleryModal {
+    display: none;
+    position: fixed;
+    z-index: 999999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#galleryOverlay {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.92);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#galleryFullImage {
+    max-width: 85%;
+    max-height: 85%;
+    object-fit: contain;
+}
+
+#galleryClose {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+
+    z-index: 1000000;
+
+    border: none;
+    border-radius: 50%;
+
+    width: 50px;
+    height: 50px;
+
+    font-size: 25px;
+
+    cursor: pointer;
+
+    background: white;
+    color: black;
+}
+
+#galleryPrev,
+#galleryNext {
+    position: absolute;
+
+    top: 50%;
+    transform: translateY(-50%);
+
+    z-index: 1000000;
+
+    border: none;
+    border-radius: 50%;
+
+    width: 55px;
+    height: 55px;
+
+    font-size: 25px;
+
+    cursor: pointer;
+
+    background: white;
+    color: black;
+}
+
+#galleryPrev {
+    left: 25px;
+}
+
+#galleryNext {
+    right: 25px;
+}
+
+#galleryCounter {
+    position: absolute;
+
+    bottom: 25px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    background: white;
+    color: black;
+
+    padding: 8px 18px;
+
+    border-radius: 20px;
+
+    font-size: 16px;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+    .product-gallery {
+        height: 260px !important;
+    }
+
+    #galleryFullImage {
+        max-width: 90%;
+        max-height: 75%;
+    }
+
+    #galleryPrev,
+    #galleryNext {
+        width: 45px;
+        height: 45px;
+        font-size: 20px;
+    }
+
+    #galleryPrev {
+        left: 10px;
+    }
+
+    #galleryNext {
+        right: 10px;
+    }
+
+}
