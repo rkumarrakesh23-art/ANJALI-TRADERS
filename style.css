@@ -827,3 +827,73 @@ body{
         padding:6px 6px;
     }
 }
+/* =========================
+   LOGO FINAL MOBILE FIX
+========================= */
+
+@media (max-width:768px){
+
+    .header{
+        position:relative !important;
+        top:auto !important;
+        height:auto !important;
+        min-height:210px;
+        padding:25px 8px 18px !important;
+        overflow:visible !important;
+    }
+
+    .logo{
+        width:100%;
+        min-height:75px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        gap:8px;
+        overflow:visible !important;
+    }
+
+    .logo-img{
+        width:60px !important;
+        height:60px !important;
+        object-fit:contain;
+        flex-shrink:0;
+        display:block;
+    }
+
+    .logo h2{
+        font-size:20px !important;
+        line-height:1.2;
+        margin:0;
+        white-space:nowrap;
+    }
+
+    .logo p{
+        font-size:11px !important;
+        margin:3px 0 0;
+        white-space:nowrap;
+    }
+
+    nav{
+        margin-top:22px;
+    }
+}
+
+@media (max-width:400px){
+
+    .header{
+        padding-top:25px !important;
+    }
+
+    .logo-img{
+        width:55px !important;
+        height:55px !important;
+    }
+
+    .logo h2{
+        font-size:18px !important;
+    }
+
+    .logo p{
+        font-size:10px !important;
+    }
+}
