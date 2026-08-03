@@ -8,7 +8,7 @@ import {
 
 
 /* =========================
-   FIREBASE CONFIG
+   FIREBASE
 ========================= */
 
 const firebaseConfig = {
@@ -25,61 +25,387 @@ const db = getFirestore(app);
 
 
 /* =========================
-   PRODUCT LOAD
+   PRODUCT GALLERY DATA
 ========================= */
 
-const container = document.getElementById("product-list");
+const galleryData = {};
+
+let fullScreenImages = [];
+let fullScreenIndex = 0;
+
+
+/* =========================
+   CREATE FULL SCREEN MODAL
+========================= */
+
+function createGalleryModal() {
+
+    if (document.getElementById("galleryModal")) return;
+
+    const modal = document.createElement("div");
+
+    modal.id = "galleryModal";
+
+    modal.innerHTML = `
+
+        <div id="galleryOverlay">
+
+            <button id="galleryClose">
+                ✕
+            </button>
+
+            <button id="galleryPrev">
+                ◀️
+            </button>
+
+            <img
+                id="galleryFullImage"
+                src=""
+                alt="Product Image"
+            >
+
+            <button id="galleryNext">
+                ▶️
+            </button>
+
+            <div id="galleryCounter">
+                1 / 4
+            </div>
+
+        </div>
+
+    `;
+
+    document.body.appendChild(modal);
+
+
+    /* CLOSE */
+
+    document
+        .getElementById("galleryClose")
+        .onclick = closeGallery;
+
+
+    /* PREVIOUS */
+
+    document
+        .getElementById("galleryPrev")
+        .onclick = function () {
+
+            if (fullScreenImages.length === 0) return;
+
+            fullScreenIndex--;
+
+            if (fullScreenIndex < 0) {
+
+                fullScreenIndex =
+                    fullScreenImages.length - 1;
+
+            }
+
+            updateFullScreenImage();
+
+        };
+
+
+    /* NEXT */
+
+    document
+        .getElementById("galleryNext")
+        .onclick = function () {
+
+            if (fullScreenImages.length === 0) return;
+
+            fullScreenIndex++;
+
+            if (
+                fullScreenIndex >=
+                fullScreenImages.length
+            ) {
+
+                fullScreenIndex = 0;
+
+            }
+
+            updateFullScreenImage();
+
+        };
+
+
+    /* CLICK OUTSIDE */
+
+    document
+        .getElementById("galleryOverlay")
+        .onclick = function (event) {
+
+            if (
+                event.target.id ===
+                "galleryOverlay"
+            ) {
+
+                closeGallery();
+
+            }
+
+        };
+
+
+    /* KEYBOARD */
+
+    document.addEventListener(
+        "keydown",
+        function (event) {
+
+            const modal =
+                document.getElementById(
+                    "galleryModal"
+                );
+
+            if (!modal) return;
+
+            if (
+                modal.style.display !==
+                "block"
+            ) return;
+
+
+            if (event.key === "ArrowLeft") {
+
+                document
+                    .getElementById("galleryPrev")
+                    .click();
+
+            }
+
+
+            if (event.key === "ArrowRight") {
+
+                document
+                    .getElementById("galleryNext")
+                    .click();
+
+            }
+
+
+            if (event.key === "Escape") {
+
+                closeGallery();
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================
+   OPEN FULL SCREEN
+========================= */
+
+function openGallery(images, index) {
+
+    fullScreenImages = images;
+
+    fullScreenIndex = index || 0;
+
+    createGalleryModal();
+
+    updateFullScreenImage();
+
+    document
+        .getElementById("galleryModal")
+        .style.display = "block";
+
+}
+
+
+/* =========================
+   UPDATE FULL IMAGE
+========================= */
+
+function updateFullScreenImage() {
+
+    const image =
+        document.getElementById(
+            "galleryFullImage"
+        );
+
+    const counter =
+        document.getElementById(
+            "galleryCounter"
+        );
+
+
+    if (!image) return;
+
+
+    image.src =
+        fullScreenImages[
+            fullScreenIndex
+        ];
+
+
+    if (counter) {
+
+        counter.textContent =
+            `${fullScreenIndex + 1} / ${fullScreenImages.length}`;
+
+    }
+
+}
+
+
+/* =========================
+   CLOSE
+========================= */
+
+function closeGallery() {
+
+    const modal =
+        document.getElementById(
+            "galleryModal"
+        );
+
+    if (modal) {
+
+        modal.style.display = "none";
+
+    }
+
+}
+
+
+/* =========================
+   LOAD PRODUCTS
+========================= */
 
 async function loadProducts() {
 
-    try {
-
-        if (!container) {
-            console.error("product-list not found in HTML");
-            return;
-        }
-
-        container.innerHTML = "<h3>Loading Products...</h3>";
-
-        const snapshot = await getDocs(
-            collection(db, "products")
+    const container =
+        document.getElementById(
+            "product-list"
         );
 
-        console.log("Products found:", snapshot.size);
+
+    if (!container) {
+
+        console.error(
+            "product-list not found"
+        );
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        "<h3>Loading Products...</h3>";
+
+
+    try {
+
+        const snapshot =
+            await getDocs(
+                collection(
+                    db,
+                    "products"
+                )
+            );
+
+
+        console.log(
+            "Products:",
+            snapshot.size
+        );
+
 
         if (snapshot.empty) {
-            container.innerHTML = "<h2>No Products Available</h2>";
+
+            container.innerHTML =
+                "<h2>No Products Available</h2>";
+
             return;
+
         }
+
 
         container.innerHTML = "";
 
-        snapshot.forEach((docSnap, productIndex) => {
 
-            const product = docSnap.data();
+        snapshot.forEach(
+            (docSnap, index) => {
 
-            /* 4 images from Firebase */
-            const images =
-                Array.isArray(product.images) &&
-                product.images.length > 0
-                    ? product.images
-                    : product.image
-                        ? [product.image]
-                        : [];
+                const product =
+                    docSnap.data();
 
-            const sliderId = `slider-${productIndex}`;
 
-            container.innerHTML += `
+                /* =========================
+                   GET 4 IMAGES
+                ========================= */
 
-                <div class="product-card">
+                let images = [];
+
+
+                if (
+                    Array.isArray(
+                        product.images
+                    )
+                ) {
+
+                    images =
+                        product.images.filter(
+                            url =>
+                                typeof url ===
+                                "string" &&
+                                url.trim() !== ""
+                        );
+
+                }
+
+
+                /* OLD PRODUCT SUPPORT */
+
+                if (
+                    images.length === 0 &&
+                    product.image
+                ) {
+
+                    images = [
+                        product.image
+                    ];
+
+                }
+
+
+                galleryData[index] =
+                    images;
+
+
+                const card =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                card.className =
+                    "product-card";
+
+
+                card.innerHTML = `
 
                     <div
-                        class="product-slider"
-                        id="${sliderId}"
+                        class="product-gallery"
                         style="
                             position:relative;
                             width:100%;
-                            text-align:center;
+                            height:320px;
+                            overflow:hidden;
+                            display:flex;
+                            align-items:center;
+                            justify-content:center;
+                            background:#f5f5f5;
+                            border-radius:12px;
                         "
                     >
 
@@ -89,16 +415,17 @@ async function loadProducts() {
                             ? `
 
                                 <img
+                                    class="product-main-image"
                                     src="${images[0]}"
-                                    class="main-product-image"
-                                    id="${sliderId}-image"
                                     alt="${product.name || "Electric Scooter"}"
                                     style="
-                                        width:100%;
-                                        max-height:350px;
-                                        object-fit:contain;
+                                        display:block !important;
+                                        visibility:visible !important;
+                                        opacity:1 !important;
+                                        width:100% !important;
+                                        height:100% !important;
+                                        object-fit:contain !important;
                                         cursor:pointer;
-                                        border-radius:10px;
                                     "
                                 >
 
@@ -108,59 +435,65 @@ async function loadProducts() {
                                     ? `
 
                                         <button
-                                            class="prev-btn"
-                                            data-slider="${sliderId}"
+                                            class="gallery-prev"
                                             style="
                                                 position:absolute;
                                                 left:10px;
                                                 top:50%;
                                                 transform:translateY(-50%);
-                                                z-index:5;
-                                                font-size:24px;
-                                                padding:8px 14px;
+                                                z-index:10;
                                                 border:none;
                                                 border-radius:50%;
+                                                width:48px;
+                                                height:48px;
+                                                font-size:22px;
                                                 cursor:pointer;
-                                                background:rgba(0,0,0,0.6);
+                                                background:rgba(0,0,0,0.65);
                                                 color:white;
                                             "
                                         >
                                             ◀️
                                         </button>
 
+
                                         <button
-                                            class="next-btn"
-                                            data-slider="${sliderId}"
+                                            class="gallery-next"
                                             style="
                                                 position:absolute;
                                                 right:10px;
                                                 top:50%;
                                                 transform:translateY(-50%);
-                                                z-index:5;
-                                                font-size:24px;
-                                                padding:8px 14px;
+                                                z-index:10;
                                                 border:none;
                                                 border-radius:50%;
+                                                width:48px;
+                                                height:48px;
+                                                font-size:22px;
                                                 cursor:pointer;
-                                                background:rgba(0,0,0,0.6);
+                                                background:rgba(0,0,0,0.65);
                                                 color:white;
                                             "
                                         >
                                             ▶️
                                         </button>
 
+
                                         <div
+                                            class="gallery-number"
                                             style="
-                                                margin-top:8px;
+                                                position:absolute;
+                                                bottom:10px;
+                                                left:50%;
+                                                transform:translateX(-50%);
+                                                background:rgba(0,0,0,0.65);
+                                                color:white;
+                                                padding:5px 12px;
+                                                border-radius:20px;
                                                 font-size:14px;
+                                                z-index:10;
                                             "
                                         >
-                                            Photo
-                                            <span id="${sliderId}-number">
-                                                1
-                                            </span>
-                                            /
-                                            ${images.length}
+                                            Photo 1 / ${images.length}
                                         </div>
 
                                     `
@@ -173,7 +506,7 @@ async function loadProducts() {
 
                             : `
 
-                                <p style="padding:20px;">
+                                <p>
                                     No Image Available
                                 </p>
 
@@ -189,7 +522,7 @@ async function loadProducts() {
 
 
                     <p>
-                        <strong>💰 Price:</strong>
+                        💰 Price:
                         ₹${product.price || "Contact Us"}
                     </p>
 
@@ -200,12 +533,14 @@ async function loadProducts() {
                         ? `
 
                             <p class="offer">
-                                🔥 Offer: ${product.offer}
+                                🔥 Offer:
+                                ${product.offer}
                             </p>
 
-                          `
+                        `
 
                         : ""
+
                     }
 
 
@@ -219,294 +554,144 @@ async function loadProducts() {
 
                     <a
                         href="https://wa.me/918235093177"
-                        class="btn"
                         target="_blank"
+                        class="btn"
                     >
                         💬 WhatsApp
                     </a>
 
-                </div>
-
-            `;
-
-        });
+                `;
 
 
-        /* =========================
-           PREVIOUS BUTTON
-        ========================= */
+                container.appendChild(card);
 
-        document
-            .querySelectorAll(".prev-btn")
-            .forEach(button => {
 
-                button.addEventListener("click", function () {
+                /* =========================
+                   GALLERY BUTTONS
+                ========================= */
 
-                    const sliderId =
-                        this.dataset.slider;
-
-                    changeProductImage(
-                        sliderId,
-                        -1
+                const image =
+                    card.querySelector(
+                        ".product-main-image"
                     );
 
-                });
 
-            });
-
-
-        /* =========================
-           NEXT BUTTON
-        ========================= */
-
-        document
-            .querySelectorAll(".next-btn")
-            .forEach(button => {
-
-                button.addEventListener("click", function () {
-
-                    const sliderId =
-                        this.dataset.slider;
-
-                    changeProductImage(
-                        sliderId,
-                        1
+                const previous =
+                    card.querySelector(
+                        ".gallery-prev"
                     );
 
-                });
 
-            });
-
-
-        /* =========================
-           IMAGE CLICK → FULL IMAGE
-        ========================= */
-
-        document
-            .querySelectorAll(".main-product-image")
-            .forEach(img => {
-
-                img.addEventListener("click", function () {
-
-                    const modal =
-                        document.getElementById("imageModal");
-
-                    const modalImage =
-                        document.getElementById("modalImage");
-
-                    if (modal && modalImage) {
-
-                        modalImage.src = this.src;
-
-                        modal.style.display = "block";
-
-                    }
-
-                });
-
-            });
-
-
-        /* =========================
-           AUTO SLIDER
-        ========================= */
-
-        document
-            .querySelectorAll(".product-slider")
-            .forEach(slider => {
-
-                const sliderId = slider.id;
-
-                const imageElement =
-                    document.getElementById(
-                        `${sliderId}-image`
+                const next =
+                    card.querySelector(
+                        ".gallery-next"
                     );
 
-                if (!imageElement) return;
 
-                const productCard =
-                    slider.closest(".product-card");
-
-                if (!productCard) return;
-
-                const productIndex =
-                    [...document.querySelectorAll(".product-card")]
-                    .indexOf(productCard);
-
-                const product =
-                    snapshot.docs[productIndex].data();
-
-                const images =
-                    Array.isArray(product.images)
-                        ? product.images
-                        : product.image
-                            ? [product.image]
-                            : [];
-
-                if (images.length <= 1) return;
-
-                setInterval(() => {
-
-                    changeProductImage(
-                        sliderId,
-                        1
+                const number =
+                    card.querySelector(
+                        ".gallery-number"
                     );
 
-                }, 5000);
 
-            });
-
-
-    } catch (err) {
-
-        console.error("Product Error:", err);
-
-        if (container) {
-
-            container.innerHTML =
-                `<h3>Error: ${err.message}</h3>`;
-
-        }
-
-    }
-
-}
+                let current = 0;
 
 
-/* =========================
-   CHANGE PRODUCT IMAGE
-========================= */
+                /* PREVIOUS */
 
-const currentImages = {};
+                if (previous) {
+
+                    previous.onclick =
+                        function () {
+
+                            current--;
+
+                            if (current < 0) {
+
+                                current =
+                                    images.length - 1;
+
+                            }
 
 
-/* =========================
-   GET PRODUCT IMAGES
-========================= */
+                            image.src =
+                                images[current];
 
-async function changeProductImage(
-    sliderId,
-    direction
-) {
 
-    const slider =
-        document.getElementById(sliderId);
+                            number.textContent =
+                                `Photo ${current + 1} / ${images.length}`;
 
-    if (!slider) return;
+                        };
 
-    const imageElement =
-        document.getElementById(
-            `${sliderId}-image`
+                }
+
+
+                /* NEXT */
+
+                if (next) {
+
+                    next.onclick =
+                        function () {
+
+                            current++;
+
+                            if (
+                                current >=
+                                images.length
+                            ) {
+
+                                current = 0;
+
+                            }
+
+
+                            image.src =
+                                images[current];
+
+
+                            number.textContent =
+                                `Photo ${current + 1} / ${images.length}`;
+
+                        };
+
+                }
+
+
+                /* =========================
+                   CLICK IMAGE → FULL SCREEN
+                ========================= */
+
+                if (image) {
+
+                    image.onclick =
+                        function () {
+
+                            openGallery(
+                                images,
+                                current
+                            );
+
+                        };
+
+                }
+
+            }
         );
 
-    if (!imageElement) return;
 
+        createGalleryModal();
 
-    const productCards =
-        document.querySelectorAll(
-            ".product-card"
-        );
-
-    let cardIndex = -1;
-
-    productCards.forEach((card, index) => {
-
-        const sliderInside =
-            card.querySelector(
-                ".product-slider"
-            );
-
-        if (
-            sliderInside &&
-            sliderInside.id === sliderId
-        ) {
-            cardIndex = index;
-        }
-
-    });
-
-
-    if (cardIndex < 0) return;
-
-
-    try {
-
-        const snapshot =
-            await getDocs(
-                collection(db, "products")
-            );
-
-        if (!snapshot.docs[cardIndex]) return;
-
-
-        const product =
-            snapshot.docs[cardIndex].data();
-
-
-        const images =
-            Array.isArray(product.images)
-                ? product.images
-                : product.image
-                    ? [product.image]
-                    : [];
-
-
-        if (images.length <= 1) return;
-
-
-        if (
-            currentImages[sliderId] === undefined
-        ) {
-
-            currentImages[sliderId] = 0;
-
-        }
-
-
-        currentImages[sliderId] += direction;
-
-
-        if (
-            currentImages[sliderId] < 0
-        ) {
-
-            currentImages[sliderId] =
-                images.length - 1;
-
-        }
-
-
-        if (
-            currentImages[sliderId] >= images.length
-        ) {
-
-            currentImages[sliderId] = 0;
-
-        }
-
-
-        imageElement.src =
-            images[currentImages[sliderId]];
-
-
-        const numberElement =
-            document.getElementById(
-                `${sliderId}-number`
-            );
-
-        if (numberElement) {
-
-            numberElement.textContent =
-                currentImages[sliderId] + 1;
-
-        }
 
     } catch (error) {
 
         console.error(
-            "Image change error:",
+            "Product Error:",
             error
         );
+
+
+        container.innerHTML =
+            `<h3>Error: ${error.message}</h3>`;
 
     }
 
@@ -514,7 +699,7 @@ async function changeProductImage(
 
 
 /* =========================
-   BANNER LOAD
+   BANNER
 ========================= */
 
 async function loadBanner() {
@@ -523,13 +708,11 @@ async function loadBanner() {
 
         const snapshot =
             await getDocs(
-                collection(db, "banners")
+                collection(
+                    db,
+                    "banners"
+                )
             );
-
-        console.log(
-            "Banners found:",
-            snapshot.size
-        );
 
 
         const bannerImage =
@@ -538,21 +721,10 @@ async function loadBanner() {
             );
 
 
-        if (!bannerImage) {
-
-            console.error(
-                "bannerImage not found in HTML"
-            );
-
-            return;
-
-        }
-
-
-        if (snapshot.empty) {
-
-            bannerImage.style.display =
-                "none";
+        if (
+            !bannerImage ||
+            snapshot.empty
+        ) {
 
             return;
 
@@ -562,54 +734,58 @@ async function loadBanner() {
         const banners = [];
 
 
-        snapshot.forEach(docSnap => {
+        snapshot.forEach(
+            docSnap => {
 
-            const data =
-                docSnap.data();
+                const data =
+                    docSnap.data();
 
-            if (data.image) {
 
-                banners.push(
-                    data.image
-                );
+                if (data.image) {
+
+                    banners.push(
+                        data.image
+                    );
+
+                }
 
             }
-
-        });
-
-
-        if (banners.length === 0) {
-
-            bannerImage.style.display =
-                "none";
-
-            return;
-
-        }
+        );
 
 
-        let currentBanner = 0;
+        if (banners.length === 0) return;
+
+
+        let current = 0;
 
 
         bannerImage.src =
-            banners[currentBanner];
-
-        bannerImage.style.display =
-            "block";
+            banners[0];
 
 
         if (banners.length > 1) {
 
-            setInterval(() => {
+            setInterval(
+                () => {
 
-                currentBanner =
-                    (currentBanner + 1) %
-                    banners.length;
+                    current++;
 
-                bannerImage.src =
-                    banners[currentBanner];
+                    if (
+                        current >=
+                        banners.length
+                    ) {
 
-            }, 4000);
+                        current = 0;
+
+                    }
+
+
+                    bannerImage.src =
+                        banners[current];
+
+                },
+                4000
+            );
 
         }
 
@@ -627,58 +803,7 @@ async function loadBanner() {
 
 
 /* =========================
-   IMAGE MODAL CLOSE
-========================= */
-
-const modal =
-    document.getElementById(
-        "imageModal"
-    );
-
-const closeButton =
-    document.querySelector(
-        ".close"
-    );
-
-
-if (closeButton && modal) {
-
-    closeButton.addEventListener(
-        "click",
-        () => {
-
-            modal.style.display =
-                "none";
-
-        }
-    );
-
-}
-
-
-if (modal) {
-
-    modal.addEventListener(
-        "click",
-        (event) => {
-
-            if (
-                event.target === modal
-            ) {
-
-                modal.style.display =
-                    "none";
-
-            }
-
-        }
-    );
-
-}
-
-
-/* =========================
-   START WEBSITE
+   START
 ========================= */
 
 loadProducts();
