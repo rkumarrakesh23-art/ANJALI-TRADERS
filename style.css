@@ -468,3 +468,28 @@ footer{
     width: 100% !important;
     z-index: 99999 !important;
 }
+/* 4 PRODUCT PHOTOS */
+.product-images {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 5px;
+}
+
+.product-images img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+    .product-images {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .product-images img {
+        height: 130px;
+    }
+}
