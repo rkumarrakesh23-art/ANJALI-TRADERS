@@ -493,3 +493,35 @@ footer{
         height: 130px;
     }
 }
+/* =========================
+   PRODUCT 4 IMAGE GALLERY FIX
+========================= */
+
+.product-slider {
+    position: relative;
+    width: 100%;
+    min-height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.product-slider .main-product-image {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 300px !important;
+    object-fit: contain !important;
+}
+
+/* Previous / Next buttons */
+
+.product-slider .prev-btn,
+.product-slider .next-btn {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
