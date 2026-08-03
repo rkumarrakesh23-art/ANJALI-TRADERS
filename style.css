@@ -18,6 +18,7 @@ body{
 /* HEADER */
 
 .header{
+ .header{
     width:100%;
     display:flex;
     justify-content:space-between;
@@ -25,11 +26,15 @@ body{
     padding:12px 6%;
     background:#0d47a1;
     color:#fff;
-    position:sticky;
+
+    position:fixed;
     top:0;
-    z-index:999;
+    left:0;
+    width:100%;
+    z-index:9999;
+
     box-shadow:0 4px 12px rgba(0,0,0,.2);
-}
+}   
 
 .logo{
     display:flex;
