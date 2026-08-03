@@ -1,4 +1,3 @@
-```css
 *{
     margin:0;
     padding:0;
@@ -16,10 +15,7 @@ body{
     overflow-x:hidden;
 }
 
-
-/* =========================
-   HEADER
-========================= */
+/* HEADER */
 
 .header{
     width:100%;
@@ -72,18 +68,9 @@ nav a{
     font-weight:600;
     padding:9px 12px;
     border-radius:8px;
-    transition:.3s;
 }
 
-nav a:hover{
-    background:#ffd54f;
-    color:#0d47a1;
-}
-
-
-/* =========================
-   HERO
-========================= */
+/* HERO */
 
 .hero{
     min-height:70vh;
@@ -111,10 +98,7 @@ nav a:hover{
     margin-bottom:25px;
 }
 
-
-/* =========================
-   BUTTON
-========================= */
+/* BUTTON */
 
 .btn{
     display:inline-block;
@@ -125,18 +109,9 @@ nav a:hover{
     border-radius:8px;
     text-decoration:none;
     font-weight:600;
-    transition:.3s;
 }
 
-.btn:hover{
-    background:#f57c00;
-    transform:translateY(-2px);
-}
-
-
-/* =========================
-   SECTIONS
-========================= */
+/* SECTIONS */
 
 section{
     padding:60px 6%;
@@ -148,20 +123,16 @@ section h2{
     font-size:34px;
 }
 
-
-/* =========================
-   BANNER
-========================= */
+/* BANNER */
 
 .banner-section{
     padding:30px 3%;
-    background:#f5f7fa;
 }
 
 .banner-slider{
     width:100%;
     max-width:1200px;
-    margin:0 auto;
+    margin:auto;
     background:#fff;
     border-radius:15px;
     overflow:hidden;
@@ -170,7 +141,6 @@ section h2{
 
 .slide{
     display:none;
-    width:100%;
 }
 
 .slide.active{
@@ -179,18 +149,13 @@ section h2{
 
 .slide img{
     width:100%;
-    max-width:100%;
     height:auto;
     max-height:500px;
     object-fit:contain;
     display:block;
-    margin:auto;
 }
 
-
-/* =========================
-   PRODUCTS
-========================= */
+/* PRODUCTS */
 
 #product-list{
     display:grid;
@@ -205,15 +170,9 @@ section h2{
     border-radius:14px;
     overflow:hidden;
     box-shadow:0 5px 15px rgba(0,0,0,.15);
-    transition:.3s;
-}
-
-.product-card:hover{
-    transform:translateY(-6px);
 }
 
 .product-slider{
-    position:relative;
     width:100%;
     height:320px;
     overflow:hidden;
@@ -252,10 +211,7 @@ section h2{
     font-weight:600;
 }
 
-
-/* =========================
-   ABOUT
-========================= */
+/* ABOUT */
 
 #about{
     background:#fff;
@@ -269,10 +225,7 @@ section h2{
     font-size:17px;
 }
 
-
-/* =========================
-   CONTACT
-========================= */
+/* CONTACT */
 
 #contact{
     text-align:center;
@@ -297,18 +250,9 @@ section h2{
     font-size:30px;
     margin:0 12px;
     color:#1565c0;
-    transition:.3s;
 }
 
-.social a:hover{
-    color:#ff9800;
-    transform:scale(1.15);
-}
-
-
-/* =========================
-   FOOTER
-========================= */
+/* FOOTER */
 
 footer{
     background:#0d47a1;
@@ -317,10 +261,7 @@ footer{
     padding:20px;
 }
 
-
-/* =========================
-   WHATSAPP FLOAT
-========================= */
+/* WHATSAPP */
 
 .whatsapp-float{
     position:fixed;
@@ -338,23 +279,14 @@ footer{
     text-decoration:none;
     box-shadow:0 6px 15px rgba(0,0,0,.25);
     z-index:1000;
-    transition:.3s;
 }
 
-.whatsapp-float:hover{
-    transform:scale(1.1);
-}
-
-
-/* =========================
-   IMAGE MODAL
-========================= */
+/* IMAGE MODAL */
 
 .image-modal{
     display:none;
     position:fixed;
-    left:0;
-    top:0;
+    inset:0;
     width:100%;
     height:100%;
     background:rgba(0,0,0,.9);
@@ -362,7 +294,6 @@ footer{
 }
 
 .modal-content{
-    display:block;
     max-width:90%;
     max-height:85%;
     position:absolute;
@@ -379,101 +310,73 @@ footer{
     color:#fff;
     font-size:45px;
     cursor:pointer;
-    z-index:10000;
 }
 
-
-/* =========================
-   ADMIN PANEL
-========================= */
-
-.admin-panel{
-    max-width:700px;
-    margin:30px auto;
-    padding:20px;
-}
-
-.admin-panel input,
-.admin-panel textarea{
-    width:100%;
-    padding:12px;
-    margin:10px 0;
-    border:1px solid #ddd;
-    border-radius:8px;
-}
-
-.admin-panel textarea{
-    height:120px;
-    resize:vertical;
-}
-
-
-/* =========================
-   MOBILE
-========================= */
+/* MOBILE */
 
 @media(max-width:768px){
 
     .header{
-        padding:10px 15px;
+        position:relative;
+        width:100%;
+        padding:15px 8px;
         flex-direction:column;
-        gap:10px;
+        gap:15px;
+        overflow:visible;
     }
 
     .logo{
         width:100%;
         justify-content:center;
+        gap:8px;
     }
 
     .logo-img{
-        width:55px;
-        height:55px;
+        width:58px;
+        height:58px;
+        flex-shrink:0;
     }
 
     .logo h2{
-        font-size:21px;
+        font-size:19px;
+        white-space:nowrap;
     }
 
     .logo p{
         font-size:11px;
+        white-space:nowrap;
     }
 
     nav{
         width:100%;
         justify-content:center;
-        flex-wrap:wrap;
-        gap:3px;
+        gap:2px;
     }
 
     nav a{
-        font-size:13px;
-        padding:7px 9px;
+        font-size:14px;
+        padding:7px 8px;
+        white-space:nowrap;
     }
 
-
-    /* Hero */
-
     .hero{
-        min-height:55vh;
-        padding:40px 15px;
+        min-height:65vh;
+        padding:50px 15px;
     }
 
     .hero h1{
-        font-size:30px;
+        font-size:32px;
     }
 
     .hero p{
         font-size:16px;
+        line-height:1.5;
     }
 
     .btn{
-        padding:11px 16px;
-        font-size:14px;
-        margin:5px;
+        padding:12px 16px;
+        margin:5px 3px;
     }
-
-
-    /* Sections */
 
     section{
         padding:45px 15px;
@@ -481,11 +384,7 @@ footer{
 
     section h2{
         font-size:28px;
-        margin-bottom:25px;
     }
-
-
-    /* Banner */
 
     .banner-section{
         padding:15px 10px;
@@ -496,14 +395,8 @@ footer{
     }
 
     .slide img{
-        width:100%;
-        height:auto;
         max-height:300px;
-        object-fit:contain;
     }
-
-
-    /* Products */
 
     #product-list{
         grid-template-columns:1fr;
@@ -517,9 +410,6 @@ footer{
     .product-slider img{
         height:280px;
     }
-
-
-    /* WhatsApp */
 
     .whatsapp-float{
         width:55px;
@@ -528,223 +418,11 @@ footer{
         right:15px;
         bottom:15px;
     }
-
-
-    /* Modal */
-
-    .modal-content{
-        max-width:95%;
-        max-height:80%;
-    }
-
-    .close{
-        top:10px;
-        right:18px;
-        font-size:40px;
-    }
-
 }
 
-
-/* =========================
-   SMALL MOBILE
-========================= */
+/* SMALL MOBILE */
 
 @media(max-width:400px){
-
-    .logo h2{
-        font-size:18px;
-    }
-
-    nav a{
-        font-size:12px;
-        padding:6px 7px;
-    }
-
-    .hero h1{
-        font-size:25px;
-    }
-
-    .hero p{
-        font-size:14px;
-    }
-
-    .product-slider{
-        height:250px;
-    }
-
-    .product-slider img{
-        height:250px;
-    }
-
-}
-```
-/* =========================
-   MOBILE FIX
-========================= */
-
-html,
-body{
-    width:100%;
-    max-width:100%;
-    overflow-x:hidden;
-}
-
-@media (max-width:768px){
-
-    .header{
-        width:100%;
-        padding:12px 10px;
-        flex-direction:column;
-        text-align:center;
-    }
-
-    .logo{
-        justify-content:center;
-        flex-wrap:wrap;
-        gap:8px;
-    }
-
-    .logo-img{
-        width:60px;
-        height:60px;
-    }
-
-    .logo h2{
-        font-size:24px;
-    }
-
-    .logo p{
-        font-size:13px;
-    }
-
-    nav{
-        width:100%;
-        margin-top:10px;
-        text-align:center;
-    }
-
-    nav a{
-        display:inline-block;
-        margin:4px 2px;
-        padding:7px 8px;
-        font-size:15px;
-    }
-
-    .hero{
-        width:100%;
-        min-height:70vh;
-        height:auto;
-        padding:60px 15px;
-    }
-
-    .hero h1{
-        font-size:34px;
-        line-height:1.2;
-    }
-
-    .hero p{
-        font-size:17px;
-        line-height:1.5;
-    }
-
-    .btn{
-        padding:12px 18px;
-        margin:6px 3px;
-    }
-
-    section{
-        padding:45px 15px;
-    }
-
-    #product-list{
-        grid-template-columns:1fr;
-        gap:20px;
-    }
-
-    .product-card{
-        width:100%;
-    }
-
-    .product-slider{
-        width:100%;
-    }
-
-    .product-slider img{
-        width:100%;
-        height:280px;
-        object-fit:contain;
-    }
-
-    .banner-slider{
-        width:100%;
-        margin:15px 0;
-        padding:5px;
-    }
-
-}
-/* =========================
-   FINAL MOBILE HEADER FIX
-========================= */
-
-@media (max-width:768px){
-
-    .header{
-        width:100%;
-        padding:12px 8px;
-        overflow:hidden;
-    }
-
-    .logo{
-        width:100%;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        gap:8px;
-        flex-wrap:nowrap;
-    }
-
-    .logo-img{
-        width:58px;
-        height:58px;
-        flex-shrink:0;
-    }
-
-    .logo > div{
-        min-width:0;
-        text-align:left;
-    }
-
-    .logo h2{
-        font-size:20px;
-        line-height:1.15;
-        white-space:nowrap;
-    }
-
-    .logo p{
-        font-size:11px;
-        line-height:1.3;
-        white-space:nowrap;
-    }
-
-    nav{
-        width:100%;
-        display:flex;
-        justify-content:center;
-        flex-wrap:nowrap;
-        gap:2px;
-    }
-
-    nav a{
-        font-size:14px;
-        padding:7px 8px;
-        white-space:nowrap;
-    }
-}
-
-
-/* VERY SMALL MOBILE */
-@media (max-width:400px){
 
     .logo-img{
         width:52px;
@@ -752,148 +430,28 @@ body{
     }
 
     .logo h2{
-        font-size:18px;
+        font-size:17px;
     }
 
     .logo p{
         font-size:10px;
     }
-/* =========================
-   FINAL HEADER TOP FIX
-========================= */
-
-@media (max-width:768px){
-
-    .header{
-        min-height:190px;
-        height:auto;
-        padding:18px 8px 14px;
-        overflow:visible;
-        position:relative;
-    }
-
-    .logo{
-        width:100%;
-        min-height:75px;
-        align-items:center;
-        justify-content:center;
-        overflow:visible;
-    }
-
-    .logo-img{
-        width:58px;
-        height:58px;
-        flex-shrink:0;
-    }
-
-    .logo h2{
-        font-size:20px;
-        line-height:1.2;
-        margin:0;
-        white-space:nowrap;
-    }
-
-    .logo p{
-        font-size:11px;
-        line-height:1.4;
-        margin:3px 0 0;
-        white-space:nowrap;
-    }
-
-    nav{
-        margin-top:18px;
-        width:100%;
-        min-height:45px;
-    }
-}
-
-@media (max-width:400px){
-
-    .header{
-        padding-top:20px;
-    }
-
-    .logo h2{
-        font-size:18px;
-    }
-
-    .logo p{
-        font-size:10px;
-    }
-}    
 
     nav a{
         font-size:12px;
-        padding:6px 6px;
-    }
-}
-/* =========================
-   LOGO FINAL MOBILE FIX
-========================= */
-
-@media (max-width:768px){
-
-    .header{
-        position:relative !important;
-        top:auto !important;
-        height:auto !important;
-        min-height:210px;
-        padding:25px 8px 18px !important;
-        overflow:visible !important;
+        padding:6px;
     }
 
-    .logo{
-        width:100%;
-        min-height:75px;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        gap:8px;
-        overflow:visible !important;
+    .hero h1{
+        font-size:26px;
     }
 
-    .logo-img{
-        width:60px !important;
-        height:60px !important;
-        object-fit:contain;
-        flex-shrink:0;
-        display:block;
+    .hero p{
+        font-size:14px;
     }
 
-    .logo h2{
-        font-size:20px !important;
-        line-height:1.2;
-        margin:0;
-        white-space:nowrap;
-    }
-
-    .logo p{
-        font-size:11px !important;
-        margin:3px 0 0;
-        white-space:nowrap;
-    }
-
-    nav{
-        margin-top:22px;
-    }
-}
-
-@media (max-width:400px){
-
-    .header{
-        padding-top:25px !important;
-    }
-
-    .logo-img{
-        width:55px !important;
-        height:55px !important;
-    }
-
-    .logo h2{
-        font-size:18px !important;
-    }
-
-    .logo p{
-        font-size:10px !important;
+    .product-slider,
+    .product-slider img{
+        height:250px;
     }
 }
