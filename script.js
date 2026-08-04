@@ -171,7 +171,7 @@ async function loadProducts() {
       </p>
     `;
 
-
+} catch (error) {
   console.error("PRODUCT ERROR:", error);
 
   container.innerHTML = `
