@@ -45,11 +45,9 @@ async function loadProducts() {
 
   if (!container) return;
 
-  container.innerHTML = `
-  <p class="loading">
-    Products Loading...
-  </p>
-`;
+container.innerHTML = '<p class="loading">Products Loading...</p>';
+
+try {
 
   try {
 
