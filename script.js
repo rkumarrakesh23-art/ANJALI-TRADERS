@@ -53,7 +53,6 @@ async function loadProducts() {
       return;
     }
 
-
     container.innerHTML = "";
 
 
@@ -61,6 +60,7 @@ async function loadProducts() {
 
       const product = docSnap.data();
 
+      // Old + New products support
       const images =
         product.images ||
         (product.image ? [product.image] : []);
@@ -71,6 +71,10 @@ async function loadProducts() {
 
       const mainImage = images[0];
 
+
+      // ==============================
+      // 4 IMAGE GALLERY
+      // ==============================
 
       const gallery = images.map((img) => {
 
@@ -86,9 +90,15 @@ async function loadProducts() {
       }).join("");
 
 
+      // ==============================
+      // PRODUCT CARD
+      // ==============================
+
       container.innerHTML += `
 
         <div class="product-card">
+
+          <!-- PRODUCT PHOTO -->
 
           <div class="product-image-box">
 
@@ -102,31 +112,43 @@ async function loadProducts() {
           </div>
 
 
+          <!-- PRODUCT NAME -->
+
           <h3>
             ${product.name || "Electric Vehicle"}
           </h3>
 
 
-          <p>
+          <!-- BRAND -->
+
+          <p class="product-brand">
             <strong>Brand:</strong>
-            ${product.brand || ""}
+            ${product.brand || "ANJALI TRADERS"}
           </p>
 
+
+          <!-- PRICE -->
 
           <p class="price">
             ₹${product.price || "Contact for Price"}
           </p>
 
 
-          <p>
-            ${product.description || ""}
-          </p>
-
+          <!-- OFFER -->
 
           <p class="offer">
             ${product.offer || ""}
           </p>
 
+
+          <!-- DESCRIPTION -->
+
+          <p class="product-description">
+            ${product.description || ""}
+          </p>
+
+
+          <!-- 4 IMAGE GALLERY -->
 
           <div class="product-gallery">
 
@@ -135,27 +157,29 @@ async function loadProducts() {
           </div>
 
 
-         <div class="product-actions">
+          <!-- SAVE + WHATSAPP -->
 
-  <button
-    onclick="saveProduct('${docSnap.id}')"
-  >
-    ⭐ Save
-  </button>
+          <div class="product-actions">
 
-  <a
-    href="https://wa.me/918235093177?text=${encodeURIComponent(
-      "Namaste ANJALI TRADERS, mujhe " +
-      (product.name || "product") +
-      " ke baare mein jankari chahiye."
-    )}"
-    target="_blank"
-    class="order-btn"
-  >
-    💬 WhatsApp
-  </a>
+            <button
+              onclick="saveProduct('${docSnap.id}')"
+            >
+              ⭐ Save
+            </button>
 
-</div> 
+
+            <a
+              href="https://wa.me/918235093177?text=${encodeURIComponent(
+                "Namaste ANJALI TRADERS, mujhe " +
+                (product.name || "product") +
+                " ke baare mein jankari chahiye."
+              )}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="order-btn"
+            >
+              💬 WhatsApp
+            </a>
 
           </div>
 
@@ -166,8 +190,9 @@ async function loadProducts() {
     });
 
 
-    // Website open hone par existing products me se
-    // ek image ko front/banner ke liye select karega
+    // ==============================
+    // RANDOM FRONT IMAGE
+    // ==============================
 
     setRandomFrontImage(snapshot);
 
@@ -207,7 +232,6 @@ function setRandomFrontImage(snapshot) {
 
     const product = docSnap.data();
 
-
     const images =
       product.images ||
       (product.image ? [product.image] : []);
@@ -232,8 +256,9 @@ function setRandomFrontImage(snapshot) {
   }
 
 
-  // Existing website products ki images me se
-  // har page open par ek image select hogi
+  // Website open hone par
+  // existing products ki images me se
+  // ek random image select hogi
 
   const randomIndex =
     Math.floor(Math.random() * allImages.length);
@@ -287,7 +312,9 @@ if (closeButton) {
       document.getElementById("imageModal");
 
     if (modal) {
+
       modal.style.display = "none";
+
     }
 
   };
@@ -295,7 +322,9 @@ if (closeButton) {
 }
 
 
-// Close by clicking outside image
+// ==============================
+// CLOSE POPUP OUTSIDE IMAGE
+// ==============================
 
 const imageModal =
   document.getElementById("imageModal");
