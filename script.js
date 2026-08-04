@@ -3,14 +3,14 @@
 // ======================================================
 
 import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+
+import {
     getFirestore,
     collection,
     getDocs
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
-
-import {
-    initializeApp
-} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 
 
 // ======================================================
@@ -18,12 +18,12 @@ import {
 // ======================================================
 
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyDRYU05VxRB3B2PIp2OPGOcoIkS6BH8Usc",
+    authDomain: "anjali-traders-bc0e6.firebaseapp.com",
+    projectId: "anjali-traders-bc0e6",
+    storageBucket: "anjali-traders-bc0e6.appspot.com",
+    messagingSenderId: "17008156965",
+    appId: "1:17008156965:web:51e29057d8da3a46f73acc"
 };
 
 
@@ -36,7 +36,7 @@ const db = getFirestore(app);
 
 
 // ======================================================
-// GLOBAL DATA
+// GLOBAL
 // ======================================================
 
 let allProducts = [];
@@ -54,16 +54,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setupImageModal();
 
+    createSavedButton();
+
 });
 
 
 // ======================================================
-// GET IMAGE FROM PRODUCT
+// GET MAIN PRODUCT IMAGE
 // ======================================================
 
 function getProductImage(product) {
 
-    // Single image
+    if (
+        Array.isArray(product.images) &&
+        product.images.length > 0
+    ) {
+        return product.images[0];
+    }
+
+    if (
+        Array.isArray(product.photos) &&
+        product.photos.length > 0
+    ) {
+        return product.photos[0];
+    }
+
     if (product.image) {
         return product.image;
     }
@@ -76,22 +91,8 @@ function getProductImage(product) {
         return product.photo;
     }
 
-    // Images array
-    if (Array.isArray(product.images) && product.images.length > 0) {
-        return product.images[0];
-    }
-
-    if (Array.isArray(product.photos) && product.photos.length > 0) {
-        return product.photos[0];
-    }
-
-    // Multiple image fields
     if (product.image1) {
         return product.image1;
-    }
-
-    if (product.image2) {
-        return product.image2;
     }
 
     return "";
@@ -107,11 +108,11 @@ function getProductImages(product) {
     let images = [];
 
     if (Array.isArray(product.images)) {
-        images = product.images;
+        images = [...product.images];
     }
 
     if (Array.isArray(product.photos)) {
-        images = product.photos;
+        images.push(...product.photos);
     }
 
     if (product.image) {
@@ -138,49 +139,54 @@ function getProductImages(product) {
         images.push(product.image4);
     }
 
-    return [...new Set(images.filter(Boolean))];
-
+    return [
+        ...new Set(
+            images.filter(Boolean)
+        )
+    ];
 }
 
 
 // ======================================================
-// LOAD PRODUCTS FROM FIRESTORE
+// LOAD PRODUCTS
 // ======================================================
 
 async function loadProducts() {
 
-    const productList = document.getElementById("product-list");
+    const productList =
+        document.getElementById("product-list");
 
     if (!productList) return;
 
+    productList.innerHTML = `
+        <p class="loading">
+            Products Loading...
+        </p>
+    `;
+
     try {
 
-        productList.innerHTML = `
-            <p class="loading">
-                Products Loading...
-            </p>
-        `;
-
-
-        const snapshot = await getDocs(
-            collection(db, "products")
-        );
-
+        const snapshot =
+            await getDocs(
+                collection(db, "products")
+            );
 
         allProducts = [];
 
-
-        snapshot.forEach((doc) => {
+        snapshot.forEach((docSnap) => {
 
             allProducts.push({
-                id: doc.id,
-                ...doc.data()
+                id: docSnap.id,
+                ...docSnap.data()
             });
 
         });
 
 
-        console.log("Products Loaded:", allProducts);
+        console.log(
+            "✅ Products Loaded:",
+            allProducts
+        );
 
 
         if (allProducts.length === 0) {
@@ -197,6 +203,7 @@ async function loadProducts() {
 
         // ==================================================
         // FRONT PRODUCT
+        // हर बार PAGE OPEN होने पर नया PRODUCT
         // ==================================================
 
         showRandomFrontProduct();
@@ -209,9 +216,19 @@ async function loadProducts() {
         displayProducts(allProducts);
 
 
-    } catch (error) {
+        // Saved count update
 
-        console.error("Product Loading Error:", error);
+        updateSavedButton();
+
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "❌ Product Loading Error:",
+            error
+        );
 
         productList.innerHTML = `
             <p style="color:red;">
@@ -225,9 +242,7 @@ async function loadProducts() {
 
 
 // ======================================================
-// FRONT PRODUCT
-// PAGE OPEN होने पर SAME DATABASE के PRODUCTS में से
-// एक अलग Product दिखेगा
+// RANDOM FRONT PRODUCT
 // ======================================================
 
 function showRandomFrontProduct() {
@@ -235,96 +250,128 @@ function showRandomFrontProduct() {
     if (!allProducts.length) return;
 
 
-    // Random Product
-    const randomIndex = Math.floor(
-        Math.random() * allProducts.length
-    );
+    // Random product
+
+    const randomIndex =
+        Math.floor(
+            Math.random() *
+            allProducts.length
+        );
 
 
-    const product = allProducts[randomIndex];
+    const product =
+        allProducts[randomIndex];
 
 
-    const image = getProductImage(product);
+    const image =
+        getProductImage(product);
 
 
-    if (!image) return;
+    if (!image) {
+
+        console.log(
+            "Front product image नहीं मिली"
+        );
+
+        return;
+    }
 
 
-    const hero = document.querySelector(".hero");
+    const hero =
+        document.querySelector(".hero");
 
 
     if (!hero) return;
 
 
-    // Existing background हटाकर
-    // Product image लगाई जा रही है
+    // ==================================================
+    // EXISTING PRODUCT IMAGE को HERO में लगाना
+    // ==================================================
 
     hero.style.backgroundImage = `
         linear-gradient(
-            rgba(0,0,0,0.20),
-            rgba(0,0,0,0.20)
+            rgba(0,0,0,0.25),
+            rgba(0,0,0,0.25)
         ),
         url("${image}")
     `;
 
-    hero.style.backgroundSize = "cover";
-    hero.style.backgroundPosition = "center";
-    hero.style.backgroundRepeat = "no-repeat";
+    hero.style.backgroundSize =
+        "cover";
+
+    hero.style.backgroundPosition =
+        "center";
+
+    hero.style.backgroundRepeat =
+        "no-repeat";
 
 
-    // Front Product Name
+    // ==================================================
+    // FRONT PRODUCT NAME
+    // ==================================================
 
     const heroContent =
-        document.querySelector(".hero-content");
-
-
-    if (heroContent) {
-
-        const productName =
-            product.name ||
-            product.productName ||
-            product.title ||
-            "ANJALI TRADERS";
-
-
-        const oldFrontProduct =
-            document.getElementById("frontProductName");
-
-
-        if (oldFrontProduct) {
-            oldFrontProduct.remove();
-        }
-
-
-        const nameElement =
-            document.createElement("p");
-
-
-        nameElement.id =
-            "frontProductName";
-
-
-        nameElement.innerHTML =
-            `⭐ Featured Product: <strong>${productName}</strong>`;
-
-
-        heroContent.appendChild(
-            nameElement
+        document.querySelector(
+            ".hero-content"
         );
 
+
+    if (!heroContent) return;
+
+
+    const oldName =
+        document.getElementById(
+            "frontProductName"
+        );
+
+
+    if (oldName) {
+        oldName.remove();
     }
+
+
+    const productName =
+        product.name ||
+        product.productName ||
+        product.title ||
+        "ANJALI TRADERS";
+
+
+    const nameElement =
+        document.createElement("p");
+
+
+    nameElement.id =
+        "frontProductName";
+
+
+    nameElement.innerHTML =
+        `⭐ Featured Product: <strong>${productName}</strong>`;
+
+
+    heroContent.appendChild(
+        nameElement
+    );
+
+
+    console.log(
+        "⭐ Front Product:",
+        productName
+    );
 
 }
 
 
 // ======================================================
-// DISPLAY ALL PRODUCTS
+// DISPLAY PRODUCTS
 // ======================================================
 
 function displayProducts(products) {
 
     const productList =
-        document.getElementById("product-list");
+        document.getElementById(
+            "product-list"
+        );
 
 
     if (!productList) return;
@@ -333,11 +380,22 @@ function displayProducts(products) {
     productList.innerHTML = "";
 
 
+    if (!products.length) {
+
+        productList.innerHTML = `
+            <p>
+                कोई Saved Product नहीं है।
+            </p>
+        `;
+
+        return;
+    }
+
+
     products.forEach((product) => {
 
         const card =
             createProductCard(product);
-
 
         productList.appendChild(card);
 
@@ -403,7 +461,7 @@ function createProductCard(product) {
                     src="${mainImage}"
                     alt="${name}"
                     class="product-image"
-                    data-image="${mainImage}"
+                    loading="lazy"
                 >
                 `
                 :
@@ -454,7 +512,7 @@ function createProductCard(product) {
 
                 <button
                     class="save-product-btn"
-                    data-id="${product.id}"
+                    type="button"
                 >
                     ${
                         saved
@@ -469,6 +527,7 @@ function createProductCard(product) {
                         "मुझे " + name + " के बारे में जानकारी चाहिए।"
                     )}"
                     target="_blank"
+                    rel="noopener noreferrer"
                     class="order-product-btn"
                 >
                     💬 WhatsApp
@@ -482,11 +541,13 @@ function createProductCard(product) {
 
 
     // ==================================================
-    // IMAGE CLICK
+    // IMAGE POPUP
     // ==================================================
 
     const productImage =
-        card.querySelector(".product-image");
+        card.querySelector(
+            ".product-image"
+        );
 
 
     if (productImage) {
@@ -525,6 +586,7 @@ function createProductCard(product) {
                     product.id
                 );
 
+
                 const savedNow =
                     isProductSaved(
                         product.id
@@ -535,6 +597,9 @@ function createProductCard(product) {
                     savedNow
                     ? "⭐ Saved"
                     : "☆ Save Product";
+
+
+                updateSavedButton();
 
             }
         );
@@ -548,7 +613,8 @@ function createProductCard(product) {
 
 
 // ======================================================
-// SAVE PRODUCT SYSTEM
+// SAVED PRODUCTS
+// LOCAL STORAGE
 // ======================================================
 
 function getSavedProducts() {
@@ -561,7 +627,9 @@ function getSavedProducts() {
             )
         ) || [];
 
-    } catch {
+    }
+
+    catch {
 
         return [];
 
@@ -576,16 +644,14 @@ function getSavedProducts() {
 
 function isProductSaved(id) {
 
-    const saved =
-        getSavedProducts();
-
-    return saved.includes(id);
+    return getSavedProducts()
+        .includes(id);
 
 }
 
 
 // ======================================================
-// SAVE / REMOVE PRODUCT
+// SAVE / REMOVE
 // ======================================================
 
 function toggleSavedProduct(id) {
@@ -601,7 +667,9 @@ function toggleSavedProduct(id) {
                 item => item !== id
             );
 
-    } else {
+    }
+
+    else {
 
         saved.push(id);
 
@@ -615,9 +683,121 @@ function toggleSavedProduct(id) {
 
 
     console.log(
-        "Saved Products:",
+        "⭐ Saved Products:",
         saved
     );
+
+}
+
+
+// ======================================================
+// CREATE SAVED BUTTON
+// ======================================================
+
+function createSavedButton() {
+
+    if (
+        document.getElementById(
+            "savedProductsButton"
+        )
+    ) {
+        return;
+    }
+
+
+    const button =
+        document.createElement("button");
+
+
+    button.id =
+        "savedProductsButton";
+
+
+    button.type =
+        "button";
+
+
+    button.innerHTML =
+        "⭐ Saved (0)";
+
+
+    button.style.position =
+        "fixed";
+
+    button.style.right =
+        "20px";
+
+    button.style.bottom =
+        "90px";
+
+    button.style.zIndex =
+        "9999";
+
+    button.style.padding =
+        "12px 16px";
+
+    button.style.border =
+        "none";
+
+    button.style.borderRadius =
+        "25px";
+
+    button.style.cursor =
+        "pointer";
+
+    button.style.fontWeight =
+        "600";
+
+
+    button.addEventListener(
+        "click",
+        () => {
+
+            showSavedProducts();
+
+            document
+                .getElementById(
+                    "products"
+                )
+                ?.scrollIntoView({
+                    behavior: "smooth"
+                });
+
+        }
+    );
+
+
+    document.body.appendChild(
+        button
+    );
+
+
+    updateSavedButton();
+
+}
+
+
+// ======================================================
+// UPDATE SAVED BUTTON
+// ======================================================
+
+function updateSavedButton() {
+
+    const button =
+        document.getElementById(
+            "savedProductsButton"
+        );
+
+
+    if (!button) return;
+
+
+    const count =
+        getSavedProducts().length;
+
+
+    button.innerHTML =
+        `⭐ Saved (${count})`;
 
 }
 
@@ -642,6 +822,12 @@ function showSavedProducts() {
 
 
     displayProducts(
+        savedProducts
+    );
+
+
+    console.log(
+        "⭐ Showing Saved Products:",
         savedProducts
     );
 
@@ -678,10 +864,10 @@ async function loadBanner() {
 
 
         snapshot.forEach(
-            (doc) => {
+            (docSnap) => {
 
                 const data =
-                    doc.data();
+                    docSnap.data();
 
 
                 const image =
@@ -702,12 +888,16 @@ async function loadBanner() {
         );
 
 
-        if (
-            banners.length === 0
-        ) {
+        console.log(
+            "✅ Banners Loaded:",
+            banners
+        );
+
+
+        if (!banners.length) {
 
             console.log(
-                "No banner found."
+                "⚠️ No banner found."
             );
 
             return;
@@ -715,24 +905,38 @@ async function loadBanner() {
         }
 
 
-        // Banner में से एक image
-        const randomBanner =
-            banners[
-                Math.floor(
-                    Math.random() *
-                    banners.length
-                )
-            ];
+        // ==================================================
+        // RANDOM BANNER
+        // PAGE OPEN होने पर एक banner
+        // ==================================================
+
+        const randomIndex =
+            Math.floor(
+                Math.random() *
+                banners.length
+            );
 
 
         bannerImage.src =
-            randomBanner;
+            banners[randomIndex];
 
 
-    } catch (error) {
+        bannerImage.onerror =
+            () => {
+
+                console.error(
+                    "❌ Banner image load नहीं हुई"
+                );
+
+            };
+
+
+    }
+
+    catch (error) {
 
         console.error(
-            "Banner Error:",
+            "❌ Banner Error:",
             error
         );
 
@@ -820,7 +1024,7 @@ function setupImageModal() {
 
 
 // ======================================================
-// OPEN IMAGE
+// OPEN IMAGE MODAL
 // ======================================================
 
 function openImageModal(image) {
@@ -841,7 +1045,9 @@ function openImageModal(image) {
         !modal ||
         !modalImage ||
         !image
-    ) return;
+    ) {
+        return;
+    }
 
 
     modalImage.src =
