@@ -134,39 +134,55 @@ try {
       card.innerHTML = `
 
 
-        <div class="product-image-box">
+     card.innerHTML = `
+  <div class="product-image-box">
 
-          <img
-            src="${images[0]}"
-            class="product-main-image"
-            id="product-image-${productId}"
-            alt="${product.name || "ANJALI TRADERS Product"}"
+    <img
+      src="${images[0]}"
+      class="product-main-image"
+      id="product-image-${productId}"
+      alt="${product.name || "ANJALI TRADERS Product"}"
+    >
+
+    ${
+      images.length > 1
+        ? `
+          <button
+            class="product-slide-btn product-prev"
+            type="button"
+            data-product="${productId}"
+            data-direction="-1"
           >
+            ‹
+          </button>
 
+          <button
+            class="product-slide-btn product-next"
+            type="button"
+            data-product="${productId}"
+            data-direction="1"
+          >
+            ›
+          </button>
+        `
+        : ""
+    }
 
-          ${
-            images.length > 1
-              ? `
-                <button
-                  class="product-slide-btn product-prev"
-                  type="button"
-                  data-product="${productId}"
-                  data-direction="-1"
-                >
-                  ❮
-                </button>
+    ${
+      images.length > 1
+        ? `
+          <div
+            class="product-photo-count"
+            id="photo-count-${productId}"
+          >
+            1 / ${images.length}
+          </div>
+        `
+        : ""
+    }
 
-                <button
-                  class="product-slide-btn product-next"
-                  type="button"
-                  data-product="${productId}"
-                  data-direction="1"
-                >
-                  ❯
-                </button>
-              `
-              : ""
-          }
+  </div>
+`;   
 
 
           <!-- PHOTO COUNT -->
