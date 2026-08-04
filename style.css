@@ -1001,3 +1001,45 @@ footer{
         margin: 5px 3px !important;
     }
 }
+/* ==============================
+   PRODUCT GRID FIX
+============================== */
+
+#product-list {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 20px !important;
+    width: 100% !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    padding: 15px !important;
+    box-sizing: border-box !important;
+}
+
+#product-list .product-card {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+}
+
+/* Laptop / Desktop */
+@media (min-width: 901px) {
+    #product-list {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+}
+
+/* Tablet */
+@media (min-width: 601px) and (max-width: 900px) {
+    #product-list {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    #product-list {
+        grid-template-columns: 1fr !important;
+    }
+}
