@@ -182,6 +182,77 @@ function setRandomFrontImage(snapshot) {
 
   if (!bannerImage) return;
 
+  const allImages = [];
+
+  snapshot.forEach((docSnap) => {
+
+    const product = docSnap.data();
+
+    const images =
+      product.images ||
+      (product.image ? [product.image] : []);
+
+    images.forEach((img) => {
+
+      if (img && !allImages.includes(img)) {
+        allImages.push(img);
+      }
+
+    });
+
+  });
+
+
+  // कोई photo नहीं मिली
+  if (allImages.length === 0) {
+
+    bannerImage.style.display = "none";
+
+    return;
+  }
+
+
+  // अधिकतम 4 photos
+  const slideImages = allImages.slice(0, 4);
+
+  let currentIndex = 0;
+
+
+  // पहली photo
+  bannerImage.src = slideImages[currentIndex];
+
+  bannerImage.style.display = "block";
+
+
+  // 3 second बाद अगली photo
+  setInterval(() => {
+
+    bannerImage.style.opacity = "0";
+
+    setTimeout(() => {
+
+      currentIndex++;
+
+      if (currentIndex >= slideImages.length) {
+        currentIndex = 0;
+      }
+
+      bannerImage.src =
+        slideImages[currentIndex];
+
+      bannerImage.style.opacity = "1";
+
+    }, 400);
+
+  }, 3000);
+
+}
+
+  const bannerImage =
+    document.getElementById("bannerImage");
+
+  if (!bannerImage) return;
+
 
   const allImages = [];
 
