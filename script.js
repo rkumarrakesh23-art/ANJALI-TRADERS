@@ -55,9 +55,7 @@ try {
 
     if (snapshot.empty) {
 
-      container.innerHTML = `
-        <p>No products available.</p>
-      `;
+   container.innerHTML = '<p>No products available.</p>';   
 
       return;
     }
