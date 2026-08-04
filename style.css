@@ -679,3 +679,35 @@ footer{
     }
 
 }
+/* GOOGLE REVIEWS */
+.google-reviews {
+  text-align: center;
+  padding: 40px 20px;
+  margin: 30px 0;
+  background: #f8f9fa;
+  border-radius: 15px;
+}
+
+.google-reviews h2 {
+  margin-bottom: 10px;
+  font-size: 28px;
+}
+
+.google-reviews p {
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.google-review-btn {
+  display: inline-block;
+  padding: 12px 22px;
+  background: #4285f4;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.google-review-btn:hover {
+  opacity: 0.9;
+}
