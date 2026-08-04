@@ -106,8 +106,7 @@ try {
       // DUPLICATE PRODUCT CHECK
       // =================================================
 
-      const uniqueKey =
-        `${product.name || ""}-${product.brand || ""}-${product.price || ""}-${images[0]}`;
+     const uniqueKey = `${product.name || ""}-${product.brand || ""}-${product.price || ""}-${images[0]}`; 
 
 
       if (seenProducts.has(uniqueKey)) {
