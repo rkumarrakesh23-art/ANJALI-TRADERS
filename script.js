@@ -26,7 +26,7 @@ const db = getFirestore(app);
 
 
 // =====================================================
-// PRODUCT GALLERY DATA
+// GLOBAL DATA
 // =====================================================
 
 const productGallery = {};
@@ -36,18 +36,22 @@ let popupImageIndex = 0;
 
 
 // =====================================================
-// PRODUCT LOAD
+// LOAD PRODUCTS
 // =====================================================
 
 async function loadProducts() {
 
   const container = document.getElementById("product-list");
 
-  if (!container) return;
+  if (!container) {
+    console.error("product-list नहीं मिला.");
+    return;
+  }
 
-container.innerHTML = '<p class="loading">Products Loading...</p>';
+  container.innerHTML =
+    '<p class="loading">Products Loading...</p>';
 
-try {
+  try {
 
     const snapshot = await getDocs(
       collection(db, "products")
@@ -55,14 +59,15 @@ try {
 
     if (snapshot.empty) {
 
-   container.innerHTML = '<p>No products available.</p>';   
+      container.innerHTML =
+        "<p>No products available.</p>";
 
       return;
     }
 
     container.innerHTML = "";
 
-    // Duplicate product रोकने के लिए
+    // Duplicate रोकने के लिए
     const seenProducts = new Set();
 
 
@@ -70,8 +75,11 @@ try {
 
       const product = docSnap.data();
 
+      const productId = docSnap.id;
+
+
       // =================================================
-      // PRODUCT IMAGES
+      // IMAGES
       // =================================================
 
       let images = [];
@@ -79,7 +87,9 @@ try {
       if (Array.isArray(product.images)) {
 
         images = product.images.filter(
-          img => img && typeof img === "string"
+          img =>
+            img &&
+            typeof img === "string"
         );
 
       }
@@ -95,30 +105,45 @@ try {
       }
 
 
-      if (images.length === 0) return;
-
-
-      // Maximum 4 photos
+      // Maximum 4 images
       images = images.slice(0, 4);
 
 
+      // Image नहीं है तो product skip
+      if (images.length === 0) {
+        return;
+      }
+
+
       // =================================================
-      // DUPLICATE PRODUCT CHECK
+      // DUPLICATE CHECK
       // =================================================
 
-      const uniqueKey = (product.name || "") + "-" + (product.brand || "") + "-" + (product.price || "") + "-" + (images[0] || "");
+      const uniqueKey =
+        String(product.name || "").trim().toLowerCase() +
+        "-" +
+        String(product.brand || "").trim().toLowerCase() +
+        "-" +
+        String(product.price || "").trim() +
+        "-" +
+        String(images[0] || "").trim();
 
 
       if (seenProducts.has(uniqueKey)) {
+
+        console.log(
+          "Duplicate product skipped:",
+          product.name
+        );
+
         return;
       }
+
 
       seenProducts.add(uniqueKey);
 
 
-      const productId = docSnap.id;
-
-      // Gallery में images save
+      // Gallery data
       productGallery[productId] = images;
 
 
@@ -126,70 +151,50 @@ try {
       // PRODUCT CARD
       // =================================================
 
-      const card = document.createElement("div");
+      const card =
+        document.createElement("div");
 
-      card.className = "product-card";
+      card.className =
+        "product-card";
 
 
       card.innerHTML = `
 
+        <!-- PRODUCT IMAGE -->
 
-     card.innerHTML = `
-  <div class="product-image-box">
+        <div class="product-image-box">
 
-    <img
-      src="${images[0]}"
-      class="product-main-image"
-      id="product-image-${productId}"
-      alt="${product.name || "ANJALI TRADERS Product"}"
-    >
-
-    ${
-      images.length > 1
-        ? `
-          <button
-            class="product-slide-btn product-prev"
-            type="button"
-            data-product="${productId}"
-            data-direction="-1"
+          <img
+            src="${images[0]}"
+            class="product-main-image"
+            id="product-image-${productId}"
+            alt="${product.name || "ANJALI TRADERS Product"}"
+            loading="lazy"
           >
-            ‹
-          </button>
-
-          <button
-            class="product-slide-btn product-next"
-            type="button"
-            data-product="${productId}"
-            data-direction="1"
-          >
-            ›
-          </button>
-        `
-        : ""
-    }
-
-    ${
-      images.length > 1
-        ? `
-          <div
-            class="product-photo-count"
-            id="photo-count-${productId}"
-          >
-            1 / ${images.length}
-          </div>
-        `
-        : ""
-    }
-
-  </div>
-`;   
-
-
-          <!-- PHOTO COUNT -->
 
           ${
             images.length > 1
               ? `
+                <button
+                  class="product-slide-btn product-prev"
+                  type="button"
+                  data-product="${productId}"
+                  data-direction="-1"
+                  aria-label="Previous image"
+                >
+                  ‹
+                </button>
+
+                <button
+                  class="product-slide-btn product-next"
+                  type="button"
+                  data-product="${productId}"
+                  data-direction="1"
+                  aria-label="Next image"
+                >
+                  ›
+                </button>
+
                 <div
                   class="product-photo-count"
                   id="photo-count-${productId}"
@@ -203,9 +208,7 @@ try {
         </div>
 
 
-        <!-- =========================================
-             PRODUCT THUMBNAILS
-        ========================================== -->
+        <!-- THUMBNAILS -->
 
         ${
           images.length > 1
@@ -225,6 +228,7 @@ try {
                     data-product="${productId}"
                     data-index="${index}"
                     alt="Product photo ${index + 1}"
+                    loading="lazy"
                   >
 
                 `).join("")}
@@ -235,9 +239,7 @@ try {
         }
 
 
-        <!-- =========================================
-             PRODUCT NAME
-        ========================================== -->
+        <!-- PRODUCT NAME -->
 
         <h3>
           ${product.name || "Electric Vehicle"}
@@ -246,36 +248,56 @@ try {
 
         <!-- BRAND -->
 
-        <p class="product-brand">
-          <strong>Brand:</strong>
-          ${product.brand || ""}
-        </p>
+        ${
+          product.brand
+            ? `
+              <p class="product-brand">
+                <strong>Brand:</strong>
+                ${product.brand}
+              </p>
+            `
+            : ""
+        }
 
 
         <!-- PRICE -->
 
         <p class="price">
-          ₹${product.price || "Contact for Price"}
+          ${
+            product.price
+              ? `₹${product.price}`
+              : "Contact for Price"
+          }
         </p>
 
 
         <!-- DESCRIPTION -->
 
-        <p class="description">
-          ${product.description || ""}
-        </p>
+        ${
+          product.description
+            ? `
+              <p class="description">
+                ${product.description}
+              </p>
+            `
+            : ""
+        }
 
 
         <!-- OFFER -->
 
-        <p class="offer">
-          ${product.offer || ""}
-        </p>
+        ${
+          product.offer
+            ? `
+              <p class="offer">
+                ${product.offer}
+              </p>
+            `
+            : ""
+        }
 
 
-        <!-- =========================================
-             SAVE + WHATSAPP
-        ========================================== -->
+        <!-- ACTIONS -->
 
         <div class="product-actions">
 
@@ -295,6 +317,7 @@ try {
               " ke baare mein jankari chahiye."
             )}"
             target="_blank"
+            rel="noopener noreferrer"
             class="order-btn"
           >
             💬 WhatsApp
@@ -309,7 +332,7 @@ try {
 
 
       // =================================================
-      // PRODUCT IMAGE CLICK
+      // MAIN IMAGE CLICK
       // =================================================
 
       const mainImage =
@@ -322,9 +345,12 @@ try {
           "click",
           () => {
 
+            const currentIndex =
+              getCurrentProductIndex(productId);
+
             openProductGallery(
               productId,
-              0
+              currentIndex
             );
 
           }
@@ -345,7 +371,9 @@ try {
 
         button.addEventListener(
           "click",
-          function () {
+          function (event) {
+
+            event.stopPropagation();
 
             const productId =
               this.dataset.product;
@@ -353,14 +381,18 @@ try {
             const direction =
               Number(this.dataset.direction);
 
-            const currentImage =
+            const currentIndex =
               getCurrentProductIndex(productId);
-
-            let newIndex =
-              currentImage + direction;
 
             const images =
               productGallery[productId] || [];
+
+            if (images.length === 0) {
+              return;
+            }
+
+            let newIndex =
+              currentIndex + direction;
 
 
             if (newIndex >= images.length) {
@@ -385,7 +417,7 @@ try {
 
 
     // =================================================
-    // THUMBNAIL CLICK
+    // THUMBNAILS
     // =================================================
 
     document
@@ -394,7 +426,9 @@ try {
 
         thumbnail.addEventListener(
           "click",
-          function () {
+          function (event) {
+
+            event.stopPropagation();
 
             const productId =
               this.dataset.product;
@@ -437,7 +471,7 @@ try {
 
 
     // =================================================
-    // FRONT BANNER
+    // BANNER
     // =================================================
 
     setRandomFrontImage(snapshot);
@@ -464,7 +498,7 @@ try {
 
 
 // =====================================================
-// GET CURRENT PRODUCT IMAGE INDEX
+// CURRENT IMAGE INDEX
 // =====================================================
 
 function getCurrentProductIndex(productId) {
@@ -478,11 +512,35 @@ function getCurrentProductIndex(productId) {
     productGallery[productId] || [];
 
 
-  if (!image) return 0;
+  if (!image || images.length === 0) {
+    return 0;
+  }
+
+
+  // URL को normalize करके compare करना
+  const currentSrc =
+    image.src;
 
 
   const index =
-    images.indexOf(image.src);
+    images.findIndex(
+      img => {
+
+        try {
+
+          return new URL(
+            img,
+            window.location.href
+          ).href === currentSrc;
+
+        } catch {
+
+          return img === currentSrc;
+
+        }
+
+      }
+    );
 
 
   return index >= 0 ? index : 0;
@@ -503,7 +561,9 @@ function changeProductImage(
     productGallery[productId] || [];
 
 
-  if (!images[index]) return;
+  if (!images[index]) {
+    return;
+  }
 
 
   const mainImage =
@@ -536,7 +596,7 @@ function changeProductImage(
   }
 
 
-  // Thumbnail active
+  // Active thumbnail
 
   const thumbnails =
     document.querySelectorAll(
@@ -573,7 +633,7 @@ function changeProductImage(
 
 
 // =====================================================
-// OPEN PRODUCT GALLERY
+// OPEN FULL IMAGE POPUP
 // =====================================================
 
 function openProductGallery(
@@ -585,12 +645,16 @@ function openProductGallery(
     productGallery[productId] || [];
 
 
-  if (images.length === 0) return;
+  if (images.length === 0) {
+    return;
+  }
 
 
-  popupProductId = productId;
+  popupProductId =
+    productId;
 
-  popupImageIndex = index;
+  popupImageIndex =
+    index;
 
 
   const modal =
@@ -612,7 +676,6 @@ function openProductGallery(
     );
 
     return;
-
   }
 
 
@@ -641,10 +704,13 @@ function setupPopupButtons() {
     );
 
 
-  if (!modal) return;
+  if (!modal) {
+    return;
+  }
 
 
-  // पहले से buttons हटाएं
+  // पुराने buttons हटाओ
+
   modal
     .querySelectorAll(
       ".popup-slide-btn"
@@ -658,10 +724,12 @@ function setupPopupButtons() {
     productGallery[popupProductId] || [];
 
 
-  if (images.length <= 1) return;
+  if (images.length <= 1) {
+    return;
+  }
 
 
-  // Previous button
+  // Previous
 
   const prev =
     document.createElement(
@@ -671,11 +739,14 @@ function setupPopupButtons() {
   prev.className =
     "popup-slide-btn popup-prev";
 
+  prev.type =
+    "button";
+
   prev.innerHTML =
     "❮";
 
 
-  // Next button
+  // Next
 
   const next =
     document.createElement(
@@ -685,14 +756,18 @@ function setupPopupButtons() {
   next.className =
     "popup-slide-btn popup-next";
 
+  next.type =
+    "button";
+
   next.innerHTML =
     "❯";
 
 
-  prev.onclick =
-    function (e) {
+  prev.addEventListener(
+    "click",
+    function (event) {
 
-      e.stopPropagation();
+      event.stopPropagation();
 
       popupImageIndex--;
 
@@ -705,13 +780,15 @@ function setupPopupButtons() {
 
       updatePopupImage();
 
-    };
+    }
+  );
 
 
-  next.onclick =
-    function (e) {
+  next.addEventListener(
+    "click",
+    function (event) {
 
-      e.stopPropagation();
+      event.stopPropagation();
 
       popupImageIndex++;
 
@@ -726,7 +803,8 @@ function setupPopupButtons() {
 
       updatePopupImage();
 
-    };
+    }
+  );
 
 
   modal.appendChild(prev);
@@ -736,7 +814,7 @@ function setupPopupButtons() {
 
 
 // =====================================================
-// UPDATE POPUP IMAGE
+// UPDATE POPUP
 // =====================================================
 
 function updatePopupImage() {
@@ -751,7 +829,9 @@ function updatePopupImage() {
     );
 
 
-  if (!modalImage) return;
+  if (!modalImage || !images.length) {
+    return;
+  }
 
 
   modalImage.src =
@@ -774,7 +854,9 @@ function setRandomFrontImage(
     );
 
 
-  if (!bannerImage) return;
+  if (!bannerImage) {
+    return;
+  }
 
 
   const allImages = [];
@@ -791,13 +873,15 @@ function setRandomFrontImage(
 
 
       if (
-        Array.isArray(
-          product.images
-        )
+        Array.isArray(product.images)
       ) {
 
         images =
-          product.images;
+          product.images.filter(
+            img =>
+              img &&
+              typeof img === "string"
+          );
 
       }
 
@@ -839,11 +923,10 @@ function setRandomFrontImage(
       "none";
 
     return;
-
   }
 
 
-  // Maximum 4 banner photos
+  // Maximum 4 banner images
 
   const slideImages =
     allImages.slice(0, 4);
@@ -855,60 +938,95 @@ function setRandomFrontImage(
   bannerImage.src =
     slideImages[currentIndex];
 
-
   bannerImage.style.display =
     "block";
+
+  bannerImage.style.opacity =
+    "1";
+
+  bannerImage.style.transition =
+    "opacity 0.4s ease";
+
+
+  if (slideImages.length <= 1) {
+    return;
+  }
 
 
   // 3 second slider
 
-  if (slideImages.length > 1) {
+  setInterval(
+    () => {
 
-    setInterval(
-      () => {
-
-        bannerImage.style.opacity =
-          "0";
+      bannerImage.style.opacity =
+        "0";
 
 
-        setTimeout(
-          () => {
+      setTimeout(
+        () => {
 
-            currentIndex++;
-
-
-            if (
-              currentIndex >=
-              slideImages.length
-            ) {
-
-              currentIndex = 0;
-
-            }
+          currentIndex++;
 
 
-            bannerImage.src =
-              slideImages[currentIndex];
+          if (
+            currentIndex >=
+            slideImages.length
+          ) {
+
+            currentIndex = 0;
+
+          }
 
 
-            bannerImage.style.opacity =
-              "1";
+          bannerImage.src =
+            slideImages[currentIndex];
 
-          },
-          400
-        );
 
-      },
-      3000
-    );
+          bannerImage.style.opacity =
+            "1";
 
-  }
+        },
+        400
+      );
+
+    },
+    3000
+  );
 
 }
 
 
 // =====================================================
 // CLOSE POPUP
+// =====================================================
+
+function closeImageModal() {
+
+  const modal =
+    document.getElementById(
+      "imageModal"
+    );
+
+
+  if (modal) {
+
+    modal.style.display =
+      "none";
+
+  }
+
+
+  popupProductId =
+    null;
+
+  popupImageIndex =
+    0;
+
+}
+
+
+// =====================================================
+// CLOSE BUTTON
 // =====================================================
 
 const closeButton =
@@ -919,29 +1037,16 @@ const closeButton =
 
 if (closeButton) {
 
-  closeButton.onclick =
-    function () {
-
-      const modal =
-        document.getElementById(
-          "imageModal"
-        );
-
-
-      if (modal) {
-
-        modal.style.display =
-          "none";
-
-      }
-
-    };
+  closeButton.addEventListener(
+    "click",
+    closeImageModal
+  );
 
 }
 
 
 // =====================================================
-// CLOSE POPUP OUTSIDE IMAGE
+// CLOSE OUTSIDE IMAGE
 // =====================================================
 
 const imageModal =
@@ -952,80 +1057,97 @@ const imageModal =
 
 if (imageModal) {
 
-  imageModal.onclick =
-    function (e) {
+  imageModal.addEventListener(
+    "click",
+    function (event) {
 
       if (
-        e.target === imageModal
+        event.target === imageModal
       ) {
 
-        imageModal.style.display =
-          "none";
+        closeImageModal();
 
       }
 
-    };
+    }
+  );
 
 }
+
+
+// =====================================================
+// ESC KEY
+// =====================================================
+
+document.addEventListener(
+  "keydown",
+  function (event) {
+
+    if (event.key === "Escape") {
+
+      closeImageModal();
+
+    }
+
+  }
+);
 
 
 // =====================================================
 // SAVE PRODUCT
 // =====================================================
 
-window.saveProduct =
-  async function (id) {
+function saveProduct(id) {
 
-    try {
+  try {
 
-      let saved =
-        JSON.parse(
-          localStorage.getItem(
-            "anjaliSavedProducts"
-          ) || "[]"
-        );
-
-
-      if (saved.includes(id)) {
-
-        alert(
-          "⭐ Product already saved hai."
-        );
-
-        return;
-
-      }
-
-
-      saved.push(id);
-
-
-      localStorage.setItem(
-        "anjaliSavedProducts",
-        JSON.stringify(saved)
+    let saved =
+      JSON.parse(
+        localStorage.getItem(
+          "anjaliSavedProducts"
+        ) || "[]"
       );
 
+
+    if (saved.includes(id)) {
 
       alert(
-        "✅ Product Save ho gaya."
+        "⭐ Product already saved hai."
       );
 
-
-    } catch (error) {
-
-      console.error(
-        "Save Error:",
-        error
-      );
-
-
-      alert(
-        "❌ Product save nahi hua."
-      );
-
+      return;
     }
 
-  };
+
+    saved.push(id);
+
+
+    localStorage.setItem(
+      "anjaliSavedProducts",
+      JSON.stringify(saved)
+    );
+
+
+    alert(
+      "✅ Product Save ho gaya."
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "Save Error:",
+      error
+    );
+
+
+    alert(
+      "❌ Product save nahi hua."
+    );
+
+  }
+
+}
 
 
 // =====================================================
