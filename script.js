@@ -341,7 +341,7 @@ async function loadProducts() {
 
 
                 /* =========================
-                   GET 4 IMAGES
+                   GET PRODUCT IMAGES
                 ========================= */
 
                 let images = [];
@@ -700,6 +700,8 @@ async function loadProducts() {
 
 /* =========================
    BANNER
+   NEW BANNER ON EVERY
+   WEBSITE OPEN / REFRESH
 ========================= */
 
 async function loadBanner() {
@@ -753,41 +755,71 @@ async function loadBanner() {
         );
 
 
-        if (banners.length === 0) return;
+        if (banners.length === 0) {
 
-
-        let current = 0;
-
-
-        bannerImage.src =
-            banners[0];
-
-
-        if (banners.length > 1) {
-
-            setInterval(
-                () => {
-
-                    current++;
-
-                    if (
-                        current >=
-                        banners.length
-                    ) {
-
-                        current = 0;
-
-                    }
-
-
-                    bannerImage.src =
-                        banners[current];
-
-                },
-                4000
-            );
+            return;
 
         }
+
+
+        /* =========================
+           REMEMBER LAST BANNER
+        ========================= */
+
+        const savedIndex =
+            Number(
+                localStorage.getItem(
+                    "anjaliLastBanner"
+                )
+            );
+
+
+        let current;
+
+
+        if (
+            Number.isInteger(savedIndex) &&
+            savedIndex >= 0 &&
+            savedIndex < banners.length
+        ) {
+
+            current =
+                (savedIndex + 1) %
+                banners.length;
+
+        } else {
+
+            current = 0;
+
+        }
+
+
+        /* =========================
+           SHOW BANNER
+        ========================= */
+
+        bannerImage.src =
+            banners[current];
+
+
+        bannerImage.style.display =
+            "block";
+
+
+        /* SAVE CURRENT BANNER */
+
+        localStorage.setItem(
+            "anjaliLastBanner",
+            current
+        );
+
+
+        console.log(
+            "Current Banner:",
+            current + 1,
+            "/",
+            banners.length
+        );
 
 
     } catch (error) {
@@ -803,7 +835,7 @@ async function loadBanner() {
 
 
 /* =========================
-   START
+   START WEBSITE
 ========================= */
 
 loadProducts();
