@@ -159,18 +159,7 @@ async function loadProducts() {
 
     setRandomFrontImage(snapshot);
 
-
-  } catch (error) {
-
-    console.error("PRODUCT ERROR:", error);
-
-    container.innerHTML = `
-      <p>
-        ❌ Products load nahi ho rahe.
-        Please try again.
-      </p>
-    
-  } 
+}
 
 
 function setRandomFrontImage(snapshot) {
