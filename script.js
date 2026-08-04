@@ -1,1060 +1,367 @@
-// ======================================================
-// ANJALI TRADERS - COMPLETE SCRIPT.JS
-// ======================================================
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 
 import {
-    initializeApp
-} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-
-import {
-    getFirestore,
-    collection,
-    getDocs
+  getFirestore,
+  collection,
+  getDocs
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 
-// ======================================================
-// FIREBASE CONFIG
-// ======================================================
+// ==============================
+// FIREBASE
+// ==============================
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDRYU05VxRB3B2PIp2OPGOcoIkS6BH8Usc",
-    authDomain: "anjali-traders-bc0e6.firebaseapp.com",
-    projectId: "anjali-traders-bc0e6",
-    storageBucket: "anjali-traders-bc0e6.appspot.com",
-    messagingSenderId: "17008156965",
-    appId: "1:17008156965:web:51e29057d8da3a46f73acc"
+  apiKey: "AIzaSyDRYU05VxRB3B2PIp2OPGOcoIkS6BH8Usc",
+  authDomain: "anjali-traders-bc0e6.firebaseapp.com",
+  projectId: "anjali-traders-bc0e6",
+  storageBucket: "anjali-traders-bc0e6.appspot.com",
+  messagingSenderId: "17008156965",
+  appId: "1:17008156965:web:51e29057d8da3a46f73acc"
 };
-
-
-// ======================================================
-// FIREBASE START
-// ======================================================
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 
-// ======================================================
-// GLOBAL
-// ======================================================
-
-let allProducts = [];
-
-
-// ======================================================
-// PAGE LOAD
-// ======================================================
-
-document.addEventListener("DOMContentLoaded", () => {
-
-    loadProducts();
-
-    loadBanner();
-
-    setupImageModal();
-
-    createSavedButton();
-
-});
-
-
-// ======================================================
-// GET MAIN PRODUCT IMAGE
-// ======================================================
-
-function getProductImage(product) {
-
-    if (
-        Array.isArray(product.images) &&
-        product.images.length > 0
-    ) {
-        return product.images[0];
-    }
-
-    if (
-        Array.isArray(product.photos) &&
-        product.photos.length > 0
-    ) {
-        return product.photos[0];
-    }
-
-    if (product.image) {
-        return product.image;
-    }
-
-    if (product.imageUrl) {
-        return product.imageUrl;
-    }
-
-    if (product.photo) {
-        return product.photo;
-    }
-
-    if (product.image1) {
-        return product.image1;
-    }
-
-    return "";
-}
-
-
-// ======================================================
-// GET ALL PRODUCT IMAGES
-// ======================================================
-
-function getProductImages(product) {
-
-    let images = [];
-
-    if (Array.isArray(product.images)) {
-        images = [...product.images];
-    }
-
-    if (Array.isArray(product.photos)) {
-        images.push(...product.photos);
-    }
-
-    if (product.image) {
-        images.push(product.image);
-    }
-
-    if (product.imageUrl) {
-        images.push(product.imageUrl);
-    }
-
-    if (product.image1) {
-        images.push(product.image1);
-    }
-
-    if (product.image2) {
-        images.push(product.image2);
-    }
-
-    if (product.image3) {
-        images.push(product.image3);
-    }
-
-    if (product.image4) {
-        images.push(product.image4);
-    }
-
-    return [
-        ...new Set(
-            images.filter(Boolean)
-        )
-    ];
-}
-
-
-// ======================================================
-// LOAD PRODUCTS
-// ======================================================
+// ==============================
+// PRODUCT LOAD
+// ==============================
 
 async function loadProducts() {
 
-    const productList =
-        document.getElementById("product-list");
+  const container = document.getElementById("product-list");
 
-    if (!productList) return;
+  if (!container) return;
 
-    productList.innerHTML = `
-        <p class="loading">
-            Products Loading...
-        </p>
-    `;
+  container.innerHTML = `
+    <p class="loading">Products Loading...</p>
+  `;
 
-    try {
+  try {
 
-        const snapshot =
-            await getDocs(
-                collection(db, "products")
-            );
-
-        allProducts = [];
-
-        snapshot.forEach((docSnap) => {
-
-            allProducts.push({
-                id: docSnap.id,
-                ...docSnap.data()
-            });
-
-        });
-
-
-        console.log(
-            "✅ Products Loaded:",
-            allProducts
-        );
-
-
-        if (allProducts.length === 0) {
-
-            productList.innerHTML = `
-                <p>
-                    अभी कोई Product उपलब्ध नहीं है।
-                </p>
-            `;
-
-            return;
-        }
-
-
-        // ==================================================
-        // FRONT PRODUCT
-        // हर बार PAGE OPEN होने पर नया PRODUCT
-        // ==================================================
-
-        showRandomFrontProduct();
-
-
-        // ==================================================
-        // ALL PRODUCTS
-        // ==================================================
-
-        displayProducts(allProducts);
-
-
-        // Saved count update
-
-        updateSavedButton();
-
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "❌ Product Loading Error:",
-            error
-        );
-
-        productList.innerHTML = `
-            <p style="color:red;">
-                Products load नहीं हो पाए।
-            </p>
-        `;
-
-    }
-
-}
-
-
-// ======================================================
-// RANDOM FRONT PRODUCT
-// ======================================================
-
-function showRandomFrontProduct() {
-
-    if (!allProducts.length) return;
-
-
-    // Random product
-
-    const randomIndex =
-        Math.floor(
-            Math.random() *
-            allProducts.length
-        );
-
-
-    const product =
-        allProducts[randomIndex];
-
-
-    const image =
-        getProductImage(product);
-
-
-    if (!image) {
-
-        console.log(
-            "Front product image नहीं मिली"
-        );
-
-        return;
-    }
-
-
-    const hero =
-        document.querySelector(".hero");
-
-
-    if (!hero) return;
-
-
-    // ==================================================
-    // EXISTING PRODUCT IMAGE को HERO में लगाना
-    // ==================================================
-
-    hero.style.backgroundImage = `
-        linear-gradient(
-            rgba(0,0,0,0.25),
-            rgba(0,0,0,0.25)
-        ),
-        url("${image}")
-    `;
-
-    hero.style.backgroundSize =
-        "cover";
-
-    hero.style.backgroundPosition =
-        "center";
-
-    hero.style.backgroundRepeat =
-        "no-repeat";
-
-
-    // ==================================================
-    // FRONT PRODUCT NAME
-    // ==================================================
-
-    const heroContent =
-        document.querySelector(
-            ".hero-content"
-        );
-
-
-    if (!heroContent) return;
-
-
-    const oldName =
-        document.getElementById(
-            "frontProductName"
-        );
-
-
-    if (oldName) {
-        oldName.remove();
-    }
-
-
-    const productName =
-        product.name ||
-        product.productName ||
-        product.title ||
-        "ANJALI TRADERS";
-
-
-    const nameElement =
-        document.createElement("p");
-
-
-    nameElement.id =
-        "frontProductName";
-
-
-    nameElement.innerHTML =
-        `⭐ Featured Product: <strong>${productName}</strong>`;
-
-
-    heroContent.appendChild(
-        nameElement
+    const snapshot = await getDocs(
+      collection(db, "products")
     );
 
+    if (snapshot.empty) {
 
-    console.log(
-        "⭐ Front Product:",
-        productName
-    );
+      container.innerHTML = `
+        <p>No products available.</p>
+      `;
 
-}
-
-
-// ======================================================
-// DISPLAY PRODUCTS
-// ======================================================
-
-function displayProducts(products) {
-
-    const productList =
-        document.getElementById(
-            "product-list"
-        );
-
-
-    if (!productList) return;
-
-
-    productList.innerHTML = "";
-
-
-    if (!products.length) {
-
-        productList.innerHTML = `
-            <p>
-                कोई Saved Product नहीं है।
-            </p>
-        `;
-
-        return;
+      return;
     }
 
 
-    products.forEach((product) => {
+    container.innerHTML = "";
 
-        const card =
-            createProductCard(product);
 
-        productList.appendChild(card);
+    snapshot.forEach((docSnap) => {
+
+      const product = docSnap.data();
+
+      const images =
+        product.images ||
+        (product.image ? [product.image] : []);
+
+
+      if (images.length === 0) return;
+
+
+      const mainImage = images[0];
+
+
+      const gallery = images.map((img) => {
+
+        return `
+          <img
+            src="${img}"
+            class="product-thumb"
+            alt="${product.name || "Product"}"
+            onclick="openProductImage('${img}')"
+          >
+        `;
+
+      }).join("");
+
+
+      container.innerHTML += `
+
+        <div class="product-card">
+
+          <div class="product-image-box">
+
+            <img
+              src="${mainImage}"
+              class="product-main-image"
+              alt="${product.name || "ANJALI TRADERS Product"}"
+              onclick="openProductImage('${mainImage}')"
+            >
+
+          </div>
+
+
+          <h3>
+            ${product.name || "Electric Vehicle"}
+          </h3>
+
+
+          <p>
+            <strong>Brand:</strong>
+            ${product.brand || ""}
+          </p>
+
+
+          <p class="price">
+            ₹${product.price || "Contact for Price"}
+          </p>
+
+
+          <p>
+            ${product.description || ""}
+          </p>
+
+
+          <p class="offer">
+            ${product.offer || ""}
+          </p>
+
+
+          <div class="product-gallery">
+
+            ${gallery}
+
+          </div>
+
+
+          <div class="product-buttons">
+
+            <button
+              onclick="saveProduct('${docSnap.id}')"
+            >
+              ⭐ Save
+            </button>
+
+
+            <a
+              href="https://wa.me/918235093177?text=${encodeURIComponent(
+                "Namaste ANJALI TRADERS, mujhe " +
+                (product.name || "product") +
+                " ke baare mein jankari chahiye."
+              )}"
+              target="_blank"
+              class="order-btn"
+            >
+              💬 WhatsApp
+            </a>
+
+          </div>
+
+        </div>
+
+      `;
 
     });
 
+
+    // Website open hone par existing products me se
+    // ek image ko front/banner ke liye select karega
+
+    setRandomFrontImage(snapshot);
+
+
+  } catch (error) {
+
+    console.error("PRODUCT ERROR:", error);
+
+    container.innerHTML = `
+      <p>
+        ❌ Products load nahi ho rahe.
+        Please try again.
+      </p>
+    `;
+
+  }
+
 }
 
 
-// ======================================================
-// CREATE PRODUCT CARD
-// ======================================================
+// ==============================
+// RANDOM FRONT IMAGE
+// ==============================
 
-function createProductCard(product) {
+function setRandomFrontImage(snapshot) {
 
-    const card =
-        document.createElement("div");
+  const bannerImage =
+    document.getElementById("bannerImage");
+
+  if (!bannerImage) return;
 
 
-    card.className =
-        "product-card";
+  const allImages = [];
+
+
+  snapshot.forEach((docSnap) => {
+
+    const product = docSnap.data();
 
 
     const images =
-        getProductImages(product);
+      product.images ||
+      (product.image ? [product.image] : []);
 
 
-    const mainImage =
-        images[0] || "";
+    images.forEach((img) => {
+
+      if (img) {
+        allImages.push(img);
+      }
+
+    });
+
+  });
 
 
-    const name =
-        product.name ||
-        product.productName ||
-        product.title ||
-        "Electric Vehicle";
+  if (allImages.length === 0) {
+
+    bannerImage.style.display = "none";
+
+    return;
+  }
 
 
-    const price =
-        product.price ||
-        product.amount ||
-        "";
+  // Existing website products ki images me se
+  // har page open par ek image select hogi
+
+  const randomIndex =
+    Math.floor(Math.random() * allImages.length);
 
 
-    const description =
-        product.description ||
-        product.details ||
-        "";
+  bannerImage.src =
+    allImages[randomIndex];
 
-
-    const saved =
-        isProductSaved(product.id);
-
-
-    card.innerHTML = `
-
-        <div class="product-image-box">
-
-            ${
-                mainImage
-                ?
-                `
-                <img
-                    src="${mainImage}"
-                    alt="${name}"
-                    class="product-image"
-                    loading="lazy"
-                >
-                `
-                :
-                `
-                <div>
-                    Product Image
-                </div>
-                `
-            }
-
-        </div>
-
-
-        <div class="product-info">
-
-            <h3>
-                ${name}
-            </h3>
-
-
-            ${
-                price
-                ?
-                `
-                <p class="product-price">
-                    ₹${price}
-                </p>
-                `
-                :
-                ""
-            }
-
-
-            ${
-                description
-                ?
-                `
-                <p class="product-description">
-                    ${description}
-                </p>
-                `
-                :
-                ""
-            }
-
-
-            <div class="product-buttons">
-
-                <button
-                    class="save-product-btn"
-                    type="button"
-                >
-                    ${
-                        saved
-                        ? "⭐ Saved"
-                        : "☆ Save Product"
-                    }
-                </button>
-
-
-                <a
-                    href="https://wa.me/918235093177?text=${encodeURIComponent(
-                        "मुझे " + name + " के बारे में जानकारी चाहिए।"
-                    )}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="order-product-btn"
-                >
-                    💬 WhatsApp
-                </a>
-
-            </div>
-
-        </div>
-
-    `;
-
-
-    // ==================================================
-    // IMAGE POPUP
-    // ==================================================
-
-    const productImage =
-        card.querySelector(
-            ".product-image"
-        );
-
-
-    if (productImage) {
-
-        productImage.addEventListener(
-            "click",
-            () => {
-
-                openImageModal(
-                    mainImage
-                );
-
-            }
-        );
-
-    }
-
-
-    // ==================================================
-    // SAVE BUTTON
-    // ==================================================
-
-    const saveButton =
-        card.querySelector(
-            ".save-product-btn"
-        );
-
-
-    if (saveButton) {
-
-        saveButton.addEventListener(
-            "click",
-            () => {
-
-                toggleSavedProduct(
-                    product.id
-                );
-
-
-                const savedNow =
-                    isProductSaved(
-                        product.id
-                    );
-
-
-                saveButton.innerHTML =
-                    savedNow
-                    ? "⭐ Saved"
-                    : "☆ Save Product";
-
-
-                updateSavedButton();
-
-            }
-        );
-
-    }
-
-
-    return card;
+  bannerImage.style.display =
+    "block";
 
 }
 
 
-// ======================================================
-// SAVED PRODUCTS
-// LOCAL STORAGE
-// ======================================================
+// ==============================
+// IMAGE POPUP
+// ==============================
 
-function getSavedProducts() {
+window.openProductImage = function(imageUrl) {
 
-    try {
+  const modal =
+    document.getElementById("imageModal");
 
-        return JSON.parse(
-            localStorage.getItem(
-                "anjaliSavedProducts"
-            )
-        ) || [];
+  const modalImage =
+    document.getElementById("modalImage");
 
+
+  if (!modal || !modalImage) return;
+
+
+  modalImage.src = imageUrl;
+
+  modal.style.display = "flex";
+
+};
+
+
+// ==============================
+// CLOSE IMAGE POPUP
+// ==============================
+
+const closeButton =
+  document.querySelector(".close");
+
+
+if (closeButton) {
+
+  closeButton.onclick = function() {
+
+    const modal =
+      document.getElementById("imageModal");
+
+    if (modal) {
+      modal.style.display = "none";
     }
 
-    catch {
-
-        return [];
-
-    }
+  };
 
 }
 
 
-// ======================================================
-// CHECK SAVED
-// ======================================================
+// Close by clicking outside image
 
-function isProductSaved(id) {
+const imageModal =
+  document.getElementById("imageModal");
 
-    return getSavedProducts()
-        .includes(id);
+
+if (imageModal) {
+
+  imageModal.onclick = function(e) {
+
+    if (e.target === imageModal) {
+
+      imageModal.style.display = "none";
+
+    }
+
+  };
 
 }
 
 
-// ======================================================
-// SAVE / REMOVE
-// ======================================================
+// ==============================
+// SAVE PRODUCT
+// ==============================
 
-function toggleSavedProduct(id) {
+window.saveProduct = async function(id) {
+
+  try {
 
     let saved =
-        getSavedProducts();
+      JSON.parse(
+        localStorage.getItem("anjaliSavedProducts") || "[]"
+      );
 
 
     if (saved.includes(id)) {
 
-        saved =
-            saved.filter(
-                item => item !== id
-            );
+      alert("⭐ Product already saved hai.");
+
+      return;
 
     }
 
-    else {
 
-        saved.push(id);
-
-    }
+    saved.push(id);
 
 
     localStorage.setItem(
-        "anjaliSavedProducts",
-        JSON.stringify(saved)
+      "anjaliSavedProducts",
+      JSON.stringify(saved)
     );
 
 
-    console.log(
-        "⭐ Saved Products:",
-        saved
-    );
+    alert("✅ Product Save ho gaya.");
 
-}
+  } catch (error) {
 
+    console.error("Save Error:", error);
 
-// ======================================================
-// CREATE SAVED BUTTON
-// ======================================================
+    alert("❌ Product save nahi hua.");
 
-function createSavedButton() {
+  }
 
-    if (
-        document.getElementById(
-            "savedProductsButton"
-        )
-    ) {
-        return;
-    }
+};
 
 
-    const button =
-        document.createElement("button");
+// ==============================
+// START WEBSITE
+// ==============================
 
-
-    button.id =
-        "savedProductsButton";
-
-
-    button.type =
-        "button";
-
-
-    button.innerHTML =
-        "⭐ Saved (0)";
-
-
-    button.style.position =
-        "fixed";
-
-    button.style.right =
-        "20px";
-
-    button.style.bottom =
-        "90px";
-
-    button.style.zIndex =
-        "9999";
-
-    button.style.padding =
-        "12px 16px";
-
-    button.style.border =
-        "none";
-
-    button.style.borderRadius =
-        "25px";
-
-    button.style.cursor =
-        "pointer";
-
-    button.style.fontWeight =
-        "600";
-
-
-    button.addEventListener(
-        "click",
-        () => {
-
-            showSavedProducts();
-
-            document
-                .getElementById(
-                    "products"
-                )
-                ?.scrollIntoView({
-                    behavior: "smooth"
-                });
-
-        }
-    );
-
-
-    document.body.appendChild(
-        button
-    );
-
-
-    updateSavedButton();
-
-}
-
-
-// ======================================================
-// UPDATE SAVED BUTTON
-// ======================================================
-
-function updateSavedButton() {
-
-    const button =
-        document.getElementById(
-            "savedProductsButton"
-        );
-
-
-    if (!button) return;
-
-
-    const count =
-        getSavedProducts().length;
-
-
-    button.innerHTML =
-        `⭐ Saved (${count})`;
-
-}
-
-
-// ======================================================
-// SHOW SAVED PRODUCTS
-// ======================================================
-
-function showSavedProducts() {
-
-    const savedIds =
-        getSavedProducts();
-
-
-    const savedProducts =
-        allProducts.filter(
-            product =>
-                savedIds.includes(
-                    product.id
-                )
-        );
-
-
-    displayProducts(
-        savedProducts
-    );
-
-
-    console.log(
-        "⭐ Showing Saved Products:",
-        savedProducts
-    );
-
-}
-
-
-// ======================================================
-// LOAD BANNER
-// ======================================================
-
-async function loadBanner() {
-
-    const bannerImage =
-        document.getElementById(
-            "bannerImage"
-        );
-
-
-    if (!bannerImage) return;
-
-
-    try {
-
-        const snapshot =
-            await getDocs(
-                collection(
-                    db,
-                    "banners"
-                )
-            );
-
-
-        const banners = [];
-
-
-        snapshot.forEach(
-            (docSnap) => {
-
-                const data =
-                    docSnap.data();
-
-
-                const image =
-                    data.image ||
-                    data.imageUrl ||
-                    data.url;
-
-
-                if (image) {
-
-                    banners.push(
-                        image
-                    );
-
-                }
-
-            }
-        );
-
-
-        console.log(
-            "✅ Banners Loaded:",
-            banners
-        );
-
-
-        if (!banners.length) {
-
-            console.log(
-                "⚠️ No banner found."
-            );
-
-            return;
-
-        }
-
-
-        // ==================================================
-        // RANDOM BANNER
-        // PAGE OPEN होने पर एक banner
-        // ==================================================
-
-        const randomIndex =
-            Math.floor(
-                Math.random() *
-                banners.length
-            );
-
-
-        bannerImage.src =
-            banners[randomIndex];
-
-
-        bannerImage.onerror =
-            () => {
-
-                console.error(
-                    "❌ Banner image load नहीं हुई"
-                );
-
-            };
-
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "❌ Banner Error:",
-            error
-        );
-
-    }
-
-}
-
-
-// ======================================================
-// IMAGE MODAL
-// ======================================================
-
-function setupImageModal() {
-
-    const modal =
-        document.getElementById(
-            "imageModal"
-        );
-
-
-    const modalImage =
-        document.getElementById(
-            "modalImage"
-        );
-
-
-    const close =
-        document.querySelector(
-            ".close"
-        );
-
-
-    if (!modal) return;
-
-
-    if (close) {
-
-        close.addEventListener(
-            "click",
-            () => {
-
-                modal.style.display =
-                    "none";
-
-            }
-        );
-
-    }
-
-
-    modal.addEventListener(
-        "click",
-        (event) => {
-
-            if (
-                event.target === modal
-            ) {
-
-                modal.style.display =
-                    "none";
-
-            }
-
-        }
-    );
-
-
-    document.addEventListener(
-        "keydown",
-        (event) => {
-
-            if (
-                event.key === "Escape"
-            ) {
-
-                modal.style.display =
-                    "none";
-
-            }
-
-        }
-    );
-
-}
-
-
-// ======================================================
-// OPEN IMAGE MODAL
-// ======================================================
-
-function openImageModal(image) {
-
-    const modal =
-        document.getElementById(
-            "imageModal"
-        );
-
-
-    const modalImage =
-        document.getElementById(
-            "modalImage"
-        );
-
-
-    if (
-        !modal ||
-        !modalImage ||
-        !image
-    ) {
-        return;
-    }
-
-
-    modalImage.src =
-        image;
-
-
-    modal.style.display =
-        "flex";
-
-}
+loadProducts();
