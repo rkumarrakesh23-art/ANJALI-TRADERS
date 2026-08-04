@@ -45,33 +45,135 @@ async function loadProducts() {
     );
 
     if (snapshot.empty) {
-
       container.innerHTML = `
         <p>No products available.</p>
       `;
-
       return;
     }
 
     container.innerHTML = "";
 
+    // Duplicate product रोकने के लिए
+    const seenProducts = new Set();
 
     snapshot.forEach((docSnap) => {
 
       const product = docSnap.data();
 
-      // Old + New products support
       const images =
         product.images ||
         (product.image ? [product.image] : []);
 
-
       if (images.length === 0) return;
-
 
       const mainImage = images[0];
 
+      // Same product दो बार न दिखे
+      const uniqueKey =
+        `${product.name || ""}-${product.brand || ""}-${product.price || ""}-${mainImage}`;
 
+      if (seenProducts.has(uniqueKey)) {
+        return;
+      }
+
+      seenProducts.add(uniqueKey);
+
+
+      container.innerHTML += `
+
+        <div class="product-card">
+
+          <!-- PRODUCT PHOTO -->
+          <div class="product-image-box">
+
+            <img
+              src="${mainImage}"
+              class="product-main-image"
+              alt="${product.name || "ANJALI TRADERS Product"}"
+              onclick="openProductImage('${mainImage}')"
+            >
+
+          </div>
+
+
+          <!-- PRODUCT NAME -->
+          <h3>
+            ${product.name || "Electric Vehicle"}
+          </h3>
+
+
+          <!-- BRAND -->
+          <p class="product-brand">
+            <strong>Brand:</strong>
+            ${product.brand || ""}
+          </p>
+
+
+          <!-- PRICE -->
+          <p class="price">
+            ₹${product.price || "Contact for Price"}
+          </p>
+
+
+          <!-- DESCRIPTION -->
+          <p class="description">
+            ${product.description || ""}
+          </p>
+
+
+          <!-- OFFER -->
+          <p class="offer">
+            ${product.offer || ""}
+          </p>
+
+
+          <!-- SAVE + WHATSAPP -->
+          <div class="product-actions">
+
+            <button
+              onclick="saveProduct('${docSnap.id}')"
+            >
+              ⭐ Save
+            </button>
+
+            <a
+              href="https://wa.me/918235093177?text=${encodeURIComponent(
+                "Namaste ANJALI TRADERS, mujhe " +
+                (product.name || "product") +
+                " ke baare mein jankari chahiye."
+              )}"
+              target="_blank"
+              class="order-btn"
+            >
+              💬 WhatsApp
+            </a>
+
+          </div>
+
+        </div>
+
+      `;
+
+    });
+
+
+    setRandomFrontImage(snapshot);
+
+
+  } catch (error) {
+
+    console.error("PRODUCT ERROR:", error);
+
+    container.innerHTML = `
+      <p>
+        ❌ Products load nahi ho rahe.
+        Please try again.
+      </p>
+    `;
+
+  }
+
+}
       // ==============================
       // 4 IMAGE GALLERY
       // ==============================
