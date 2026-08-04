@@ -135,26 +135,27 @@ async function loadProducts() {
           </div>
 
 
-          <div class="product-buttons">
+         <div class="product-actions">
 
-            <button
-              onclick="saveProduct('${docSnap.id}')"
-            >
-              ⭐ Save
-            </button>
+  <button
+    onclick="saveProduct('${docSnap.id}')"
+  >
+    ⭐ Save
+  </button>
 
+  <a
+    href="https://wa.me/918235093177?text=${encodeURIComponent(
+      "Namaste ANJALI TRADERS, mujhe " +
+      (product.name || "product") +
+      " ke baare mein jankari chahiye."
+    )}"
+    target="_blank"
+    class="order-btn"
+  >
+    💬 WhatsApp
+  </a>
 
-            <a
-              href="https://wa.me/918235093177?text=${encodeURIComponent(
-                "Namaste ANJALI TRADERS, mujhe " +
-                (product.name || "product") +
-                " ke baare mein jankari chahiye."
-              )}"
-              target="_blank"
-              class="order-btn"
-            >
-              💬 WhatsApp
-            </a>
+</div> 
 
           </div>
 
