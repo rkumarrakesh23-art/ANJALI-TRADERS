@@ -176,10 +176,9 @@ async function loadProducts() {
     // ==============================
 
     setRandomFrontImage(snapshot);
-
-  } catch (error) {  
-
-} catch (error) { 
+ 
+} catch (error) {
+ 
   console.error("PRODUCT ERROR:", error);
 
     container.innerHTML = `
