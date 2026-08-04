@@ -169,22 +169,8 @@ async function loadProducts() {
         ❌ Products load nahi ho rahe.
         Please try again.
       </p>
-    `;
-
-} catch (error) {
-  console.error("PRODUCT ERROR:", error);
-
-  container.innerHTML = `
-    <p>
-      ❌ Products load nahi ho rahe.
-      Please try again.
-    </p>
-  `;
-
-}
-
-}
-
+    
+  } 
 
 
 function setRandomFrontImage(snapshot) {
