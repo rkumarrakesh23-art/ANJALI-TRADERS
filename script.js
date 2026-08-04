@@ -133,9 +133,6 @@ try {
 
       card.innerHTML = `
 
-        <!-- =========================================
-             PRODUCT IMAGE SLIDER
-        ========================================== -->
 
         <div class="product-image-box">
 
