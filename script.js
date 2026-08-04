@@ -47,8 +47,6 @@ async function loadProducts() {
 
 container.innerHTML = '<p class="loading">Products Loading...</p>';
 
-try {
-
   try {
 
     const snapshot = await getDocs(
