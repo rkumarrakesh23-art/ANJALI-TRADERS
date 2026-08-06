@@ -932,7 +932,10 @@ function setRandomFrontImage(
     allImages.slice(0, 4);
 
 
-  let currentIndex = 0;
+ let currentIndex =
+  Math.floor(
+    Math.random() * slideImages.length
+  );
 
 
   bannerImage.src =
