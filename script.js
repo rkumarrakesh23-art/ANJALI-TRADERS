@@ -953,49 +953,6 @@ function setRandomFrontImage(
   }
 
 
-  // 3 second slider
-
-  setInterval(
-    () => {
-
-      bannerImage.style.opacity =
-        "0";
-
-
-      setTimeout(
-        () => {
-
-          currentIndex++;
-
-
-          if (
-            currentIndex >=
-            slideImages.length
-          ) {
-
-            currentIndex = 0;
-
-          }
-
-
-          bannerImage.src =
-            slideImages[currentIndex];
-
-
-          bannerImage.style.opacity =
-            "1";
-
-        },
-        400
-      );
-
-    },
-    3000
-  );
-
-}
-
-
 // =====================================================
 // CLOSE POPUP
 // =====================================================
