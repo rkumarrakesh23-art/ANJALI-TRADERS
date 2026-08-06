@@ -158,7 +158,6 @@ async function loadProducts() {
         "product-card";
 
 
-      card.innerHTML = `
 
         <!-- PRODUCT IMAGE -->
 
