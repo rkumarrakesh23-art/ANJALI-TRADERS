@@ -157,8 +157,8 @@ async function loadProducts() {
       card.className =
         "product-card";
 
-
-
+      card.innerHTML = `
+      
         <!-- PRODUCT IMAGE -->
 
         <div class="product-image-box">
